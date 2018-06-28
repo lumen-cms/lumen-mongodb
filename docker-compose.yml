@@ -1,0 +1,16 @@
+version: "3"
+services:
+  db:
+    image: "bitnami/mongodb:latest"
+    ports:
+      - '27017:27017'
+    networks:
+      - net
+    environment:
+      MONGODB_USERNAME: lumen-cms
+      MONGODB_PASSWORD: lumen-cms-123
+      MONGODB_DATABASE: lumen-cms-backend
+    volumes:
+      - './containers/mongo:/data/db'
+networks:
+  net:

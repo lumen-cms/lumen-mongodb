@@ -1,0 +1,29 @@
+# User Schema
+
+type Profile{
+    firstName: String
+    lastName: String
+    name: String
+}
+
+type EmailReq{
+    address:String
+}
+
+type User {
+    _id: String
+    profile: Profile
+    username: String
+    emails:[EmailReq!]!
+}
+
+type Email{
+    address:String
+}
+
+type UserListPayload{
+    _id:String,
+    profile:Profile,
+    username:String,
+    emails:[Email!]!
+}

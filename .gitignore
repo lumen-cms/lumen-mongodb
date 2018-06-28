@@ -1,0 +1,10 @@
+# dependencies
+node_modules
+*.iml
+*.log*
+.idea
+.vscode
+.DS_Store
+dist
+coverage
+.env*
