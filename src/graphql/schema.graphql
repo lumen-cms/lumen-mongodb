@@ -1,0 +1,2 @@
+#import Query.*, Subscription.*, Mutation.* from '../modules/user/schema.graphql'
+#import Query.* from '../modules/article/schema.graphql'

@@ -1,0 +1,60 @@
+#import MutationType, GeneralMutationUpdatePayload from '../../graphql/genericTypesAndEnums.graphql'
+
+type ArticlePayload{
+    id:String!
+}
+
+type Query {
+    articleByPath(path:String!): ArticlePayload!
+}
+type File {
+    id:String
+    contentType:String
+    name:String
+    secret:String
+    width:Number
+    height:Number
+}
+type Media{
+    file:File
+}
+
+type Author {
+    name:String
+    id:String
+    file:File
+}
+
+type Category{
+    id: String
+    title: String
+    slug: String
+    languageKey: String
+    createdAt: Date
+    updatedAt: Date
+}
+
+type Article{
+    id:String
+    slug: String
+    description: String
+    title: String
+    deleted: Boolean
+    metaTitle: String
+    teaser: String
+    keywords: String
+    published: Boolean
+    publishedDate: Date
+    languageKey: String
+    isBlogEntry: Boolean
+    authors: [Author!]!
+    createdAt: Date
+    updatedAt: Date
+    categories:[Category!]!
+    media:[Media!]!
+}
+
+
+type Mutation{
+    createArticle(data:ArticleCreateInput): GeneralMutationUpdatePayload!
+}

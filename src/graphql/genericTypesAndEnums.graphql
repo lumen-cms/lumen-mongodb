@@ -1,0 +1,12 @@
+enum MutationType {
+    CREATED
+    UPDATED
+    DELETED
+}
+
+type GeneralMutationUpdatePayload{
+    acknowledged: Boolean
+    matchedCount: Int
+    modifiedCount: Int
+    upsertedId: String
+}
