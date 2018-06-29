@@ -1,17 +1,18 @@
-#import User UserListPayload from './schemas/user.graphql'
+#import User UserListPayload Permission from './schemas/user.graphql'
 #import MutationType, UpdateOnePayload, InsertOnePayload from '../../graphql/genericTypesAndEnums.graphql'
 
-type Query {
-    users: [UserListPayload!]!
-    me: User!
+
+type SignupUserPayload{
+    id:String!
+    firstName:String!
+    lastName:String
+    email:String!
+    permissions:[Permission]
 }
-type SignupPayload{
+
+type SignupLoginPayload{
     token:String!
-    user:User!
-}
-type LoginPayload{
-    token: String!
-    user: User!
+    user:SignupUserPayload!
 }
 
 input UpdateUserInput{
@@ -21,12 +22,37 @@ input UpdateUserInput{
     email: String
 }
 
+input LoginInput{
+    email:String!,
+    password:String!
+}
+
+input SignupInput{
+    email:String!
+    password:String!
+    firstName:String!
+    lastName:String!
+    password:String!
+}
+
+input CreateUserInput{
+    firstName: String!
+    lastName: String!
+    email: String!
+}
+
 type Mutation {
     updateUser(data:UpdateUserInput): UpdateOnePayload!
-    createUser(firstName: String!, lastName: String!, email: String!): InsertOnePayload!
-    signup(firstName:String!, lastName:String!, email:String!, password:String!): SignupPayload!
-    login(email:String!, password:String!): SignupPayload!
+    createUser(data:CreateUserInput): InsertOnePayload!
+    signup(data:SignupInput): SignupLoginPayload!
+    login(data:LoginInput): SignupLoginPayload!
 }
+
+type Query {
+    users: [UserListPayload!]!
+    me: User!
+}
+
 
 type SubscriptionPayload{
     node:User

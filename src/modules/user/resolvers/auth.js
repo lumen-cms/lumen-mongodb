@@ -43,30 +43,34 @@ module.exports = {
         signup: async (parent, {email, firstName, lastName, password}, {db, projectId}) => {
             const hashed = await bcrypt.hash(password, 10)
             const form = getUserObj({email, firstName, lastName})
+            const permissions = [{
+                projectId,
+                role: UserRole.MODERATOR
+            }]
+
             Object.assign(form, {
                 services: {
                     password: {
                         bcrypt: hashed
                     }
                 },
-                permissions: [{
-                    projectId,
-                    role: UserRole.MODERATOR
-                }]
+                permissions
             })
             // save the post
             try {
                 const collection = db.collection(CollectionNames.users)
                 const {insertedId} = await insertOneMutation(collection, form)
                 const user = await collection.findOne({id: insertedId})
+                const token = signTokenForUser({
+                    id: insertedId,
+                    email,
+                    firstName,
+                    lastName,
+                    permissions
+                })
+                // todo write token into user object as lastloggedin
                 return {
-                    token: signTokenForUser({
-                        id: insertedId,
-                        email,
-                        firstName,
-                        lastName,
-                        permissions: form.permissions
-                    }),
+                    token: token,
                     user: Object.assign(user, {_id: user._id.valueOf()})
                 }
             } catch (e) {
