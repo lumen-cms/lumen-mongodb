@@ -1,5 +1,13 @@
 # User Schema
 
+enum Role{
+    OPERATOR
+    ADMIN
+    MODERATOR
+    EDITOR
+    GUEST
+}
+
 type Profile{
     firstName: String
     lastName: String
@@ -10,16 +18,25 @@ type EmailReq{
     address:String
 }
 
+type Permission {
+    projectId: String
+    role: Role
+}
+
 type User {
     _id: String
     profile: Profile
     username: String
     emails:[EmailReq!]!
+    permissions:[Permission!]!
 }
 
 type Email{
-    address:String
+    address: String
+    verified: Boolean
 }
+
+
 
 type UserListPayload{
     _id:String,

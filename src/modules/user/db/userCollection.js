@@ -1,4 +1,4 @@
-const {CollectionNames} = require('../../../../mongo/enum')
+const {CollectionNames} = require('../../../mongo/enum')
 
 const validation = {
     $jsonSchema: {
@@ -8,6 +8,9 @@ const validation = {
         properties: {
             _id: {
                 bsonType: 'objectId'
+            },
+            id: {
+                bsonType: 'string'
             },
             username: {
                 bsonType: 'string'
@@ -71,23 +74,40 @@ const validation = {
                         bsonType: 'object'
                     }
                 }
+            },
+            permissions: {
+                bsonType: 'array',
+                additionalProperties: false,
+                properties: {
+                    projectId: {
+                        bsonType: 'string'
+                    },
+                    role: {
+                        bsonType: 'string'
+                    }
+                }
             }
         }
     }
 }
+
 /**
  *
- * @param db
+ * @param {Db} db
  * @returns {Promise|*}
  */
-module.exports = function (db) {
+async function initUserCollection (db) {
     try {
-        db.createCollection(CollectionNames.users, {validator: validation})
+        await db.createCollection(CollectionNames.users, {validator: validation})
         const col = db.collection(CollectionNames.users)
-        col.createIndex({'emails.address': 1}, {unique: true})
-        col.createIndex({'username': 1}, {unique: true})
+        await col.createIndex({'emails.address': 1}, {unique: true})
+        await col.createIndex({'username': 1}, {unique: true})
+        await col.createIndex({id: 1}, {unique: true})
     } catch (e) {
         console.log(e)
         throw new Error(e)
     }
 }
+
+
+module.exports = {initUserCollection}

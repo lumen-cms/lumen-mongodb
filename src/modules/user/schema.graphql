@@ -1,17 +1,5 @@
 #import User UserListPayload from './schemas/user.graphql'
-#import MutationType, GeneralMutationUpdatePayload from '../../graphql/genericTypesAndEnums.graphql'
-
-type UserUpdatePayload{
-    acknowledged: Boolean
-    matchedCount: Int
-    modifiedCount: Int
-    upsertedId: String
-}
-
-type UserInsertPayload{
-    acknowledged: Boolean
-    insertId: String
-}
+#import MutationType, UpdateOnePayload, InsertOnePayload from '../../graphql/genericTypesAndEnums.graphql'
 
 type Query {
     users: [UserListPayload!]!
@@ -34,8 +22,8 @@ input UpdateUserInput{
 }
 
 type Mutation {
-    updateUser(data:UpdateUserInput): UserUpdatePayload!
-    createUser(firstName: String!, lastName: String!, email: String!): UserInsertPayload!
+    updateUser(data:UpdateUserInput): UpdateOnePayload!
+    createUser(firstName: String!, lastName: String!, email: String!): InsertOnePayload!
     signup(firstName:String!, lastName:String!, email:String!, password:String!): SignupPayload!
     login(email:String!, password:String!): SignupPayload!
 }

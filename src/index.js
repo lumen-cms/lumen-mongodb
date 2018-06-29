@@ -4,6 +4,7 @@ const {GraphQLServer, PubSub, withFilter} = require('graphql-yoga')
 require('dotenv').config()
 const {startDB} = require('./mongo/initDb')
 const resolvers = require('./graphql/resolvers')
+const {getProjectId, getUserFromToken} = require('./util/contextHelper')
 
 async function startServer () {
 
@@ -28,7 +29,9 @@ async function startServer () {
         db: initDb.db,
         ObjectID: initDb.ObjectID,
         pubSub,
-        withFilter
+        withFilter,
+        projectId: getProjectId(req.request),
+        user: getUserFromToken(req.request)
     })
 
     /**
@@ -50,7 +53,7 @@ async function startServer () {
         port: 4000
     }
 
-    Server.start(opts, () => {
+    return Server.start(opts, () => {
         console.log(`Server is running on http://localhost:${opts.port}`)
     })
 }

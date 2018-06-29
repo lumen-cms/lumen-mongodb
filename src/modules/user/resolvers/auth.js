@@ -1,32 +1,15 @@
-const {CollectionNames} = require('../../../mongo/enum')
+const {CollectionNames, UserRole} = require('../../../mongo/enum')
 const bcrypt = require('bcryptjs')
-const jwt = require('jsonwebtoken')
+const {sign} = require('jsonwebtoken')
+const insertOneMutation = require('../../../mongo/mutations/insertOneMutation').insertOneMutation
 const {getUserObj} = require('../utils/userHelpers')
-const APP_SECRET = 'super-secret-app-key-pt'
-const oID = require('mongodb').ObjectID
+
 /**
  * @description generates a user token based on userId and app secret
- * @param userId
+ * @param user
  * @returns {*}
  */
-const generateToken = userId =>
-    jwt.sign({userId}, process.env.APP_SECRET || APP_SECRET)
-
-/**
- * @description returns userId from generated token
- * @param ctx
- * @returns {*}
- */
-const getUserIdFromContext = req => {
-    const Authorization = req.get('Authorization')
-    if (Authorization) {
-        const token = Authorization.replace('Bearer ', '')
-        const {userId} = jwt.verify(token, APP_SECRET)
-        return userId
-    }
-
-    throw new Error('error_token_not_valid')
-}
+const signTokenForUser = user => sign({user}, process.env.APP_SECRET)
 
 module.exports = {
     Query: {
@@ -39,14 +22,10 @@ module.exports = {
          * @param {ObjectID} ObjectID
          * @returns {Promise<void>}
          */
-        me: async (parent, ctx, {db, req, ObjectID}) => {
-            const _id = getUserIdFromContext(req)
-            const oIDOfUser = oID(_id)
-            const user = await db.collection(CollectionNames.users).findOne({_id: ObjectID(_id)})
-            Object.assign(user, {
-                _id: user._id.valueOf()
-            })
-            return user
+        me: async (parent, ctx, {db, req, user}) => {
+            const id = user && user.id
+            if (!id) return null
+            return db.collection(CollectionNames.users).findOne({id: id})
         }
     },
     Mutation: {
@@ -61,7 +40,7 @@ module.exports = {
          * @param {ObjectID} ObjectID
          * @returns {Promise<{token: *, user: *}>}
          */
-        signup: async (parent, {email, firstName, lastName, password}, {db, ObjectID}) => {
+        signup: async (parent, {email, firstName, lastName, password}, {db, projectId}) => {
             const hashed = await bcrypt.hash(password, 10)
             const form = getUserObj({email, firstName, lastName})
             Object.assign(form, {
@@ -69,17 +48,25 @@ module.exports = {
                     password: {
                         bcrypt: hashed
                     }
-                }
+                },
+                permissions: [{
+                    projectId,
+                    role: UserRole.MODERATOR
+                }]
             })
             // save the post
             try {
                 const collection = db.collection(CollectionNames.users)
-                const res = await collection.insertOne(
-                    form
-                )
-                const user = await collection.findOne({_id: ObjectID(res.insertedId)})
+                const {insertedId} = await insertOneMutation(collection, form)
+                const user = await collection.findOne({id: insertedId})
                 return {
-                    token: generateToken(res.insertedId),
+                    token: signTokenForUser({
+                        id: insertedId,
+                        email,
+                        firstName,
+                        lastName,
+                        permissions: form.permissions
+                    }),
                     user: Object.assign(user, {_id: user._id.valueOf()})
                 }
             } catch (e) {
@@ -111,7 +98,12 @@ module.exports = {
                     throw new Error('Invalid password')
                 }
                 return {
-                    token: generateToken(user._id),
+                    token: signTokenForUser({
+                        id: user._id,
+                        firstName: user.profile.firstName,
+                        lastName: user.profile.lastName,
+                        permissions: user.permissions
+                    }),
                     user: Object.assign(user, {_id: user._id.valueOf()})
                 }
             } catch (e) {

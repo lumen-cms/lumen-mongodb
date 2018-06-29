@@ -4,9 +4,14 @@ enum MutationType {
     DELETED
 }
 
-type GeneralMutationUpdatePayload{
+type UpdateOnePayload{
     acknowledged: Boolean
     matchedCount: Int
     modifiedCount: Int
     upsertedId: String
+}
+
+type InsertOnePayload{
+    acknowledged: Boolean
+    insertedId: String
 }
