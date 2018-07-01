@@ -1,4 +1,4 @@
-const insertOneMutation = require('../../../mongo/mutations/insertOneMutation').insertOneMutation
+const {insertOneMutation} = require('../../../mongo/mutations/insertOneMutation')
 const {CollectionNames} = require('../../../mongo/enum')
 
 
@@ -38,9 +38,10 @@ module.exports = {
          * @param {ObjectID} ObjectID
          * @returns {Promise<void>}
          */
-        createArticle: async (parent, ctx, {db, req}) => {
-            const data = ctx.data
-            return await insertOneMutation(db.collection(CollectionNames.articles), data)
+        createArticle: async (parent, {data}, {db, projectId, user}) => {
+            data.projectId = projectId
+            data.createdBy = user.id
+            return insertOneMutation(db.collection(CollectionNames.articles), data)
         }
     }
 }

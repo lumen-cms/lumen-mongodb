@@ -1,4 +1,16 @@
 const {verify} = require('jsonwebtoken')
+
+/**
+ *
+ * @typedef {Object} AuthUser
+ * @property {String} email
+ * @property {String} firstName
+ * @property {String} lastName
+ * @property {Array} permissions
+ * @property {string} permissions.projectId
+ * @property {string} permissions.role
+ */
+
 module.exports = {
     /**
      *
@@ -8,19 +20,23 @@ module.exports = {
     getProjectId: function (req) {
         const projectId = req.header('projectid') || (process.env.NODE_ENV === 'development' && process.env.PROJECT_ID)
         if (!projectId) {
-            throw new Error('projectId must be set to run this server')
+            throw new Error('projectId|projectid must be set to run this server')
         }
         return projectId
     },
     /**
      *
      * @param {Request} req
+     * @return {AuthUser|null}
      */
     getUserFromToken: function (req) {
         try {
             const Authorization = req.get('Authorization')
             if (Authorization) {
                 const token = Authorization.replace('Bearer ', '')
+                /**
+                 * @type AuthUser
+                 */
                 const {user} = verify(token, process.env.APP_SECRET)
                 return user || null
             } else {
@@ -30,6 +46,5 @@ module.exports = {
             console.log(e)
             throw new Error('error_token_not_valid')
         }
-        throw new Error('error_token_not_valid')
     }
 }

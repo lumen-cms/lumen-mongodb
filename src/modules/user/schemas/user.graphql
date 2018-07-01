@@ -24,7 +24,7 @@ type Permission {
 }
 
 type User {
-    _id: String
+    id: String
     profile: Profile
     username: String
     emails:[EmailReq!]!
@@ -39,7 +39,7 @@ type Email{
 
 
 type UserListPayload{
-    _id:String,
+    id:String,
     profile:Profile,
     username:String,
     emails:[Email!]!

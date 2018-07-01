@@ -15,3 +15,8 @@ type InsertOnePayload{
     acknowledged: Boolean
     insertedId: String
 }
+
+type DeleteOnePayload{
+    acknowledged:Boolean
+    deletedCount:Int
+}

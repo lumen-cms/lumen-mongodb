@@ -107,9 +107,9 @@ module.exports = {
          */
         createUser: async (parent, {email, firstName, lastName}, {db, pubSub}) => {
             const form = getUserObj({email, firstName, lastName})
+            const collection = db.collection(CollectionNames.users)
             // save the post
             try {
-                let collection = db.collection(CollectionNames.users)
                 const res = await collection.insertOne(
                     form
                 )
@@ -124,6 +124,27 @@ module.exports = {
             } catch (e) {
                 console.log(e)
                 throw new Error(e)
+            }
+        },
+        /**
+         *
+         * @param parent
+         * @param id
+         * @param username
+         * @param {Db} db
+         * @returns {Promise<void>}
+         */
+        deleteUser: async (parent, {data:{id, username}}, {db}) => {
+            const collection = db.collection(CollectionNames.users)
+            const find = {}
+            id && (find.id = id)
+            username && (find.username = username)
+            try {
+                const r = await collection.deleteOne(find)
+                return r
+            } catch (e) {
+                console.log(e)
+                throw new Error('delete_user_error')
             }
         }
     },

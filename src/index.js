@@ -4,6 +4,7 @@ const {GraphQLServer, PubSub, withFilter} = require('graphql-yoga')
 require('dotenv').config()
 const {startDB} = require('./mongo/initDb')
 const resolvers = require('./graphql/resolvers')
+const {permissions} = require('./graphql/permissions')
 const {getProjectId, getUserFromToken} = require('./util/contextHelper')
 
 async function startServer () {
@@ -41,7 +42,8 @@ async function startServer () {
     const Server = new GraphQLServer({
         typeDefs: resolve(__dirname, './graphql/schema.graphql'),
         resolvers,
-        context
+        context,
+        middlewares: [permissions]
     })
 
     // options

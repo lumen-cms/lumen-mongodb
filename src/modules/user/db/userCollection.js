@@ -3,87 +3,90 @@ const {CollectionNames} = require('../../../mongo/enum')
 const validation = {
     $jsonSchema: {
         bsonType: 'object',
-        additionalProperties: false,
         required: ['username'],
         properties: {
-            _id: {
-                bsonType: 'objectId'
-            },
-            id: {
-                bsonType: 'string'
-            },
             username: {
-                bsonType: 'string'
+                bsonType: 'string',
+                description:'string and is not required'
             },
             profile: {
                 bsonType: 'object',
-                additionalProperties: false,
                 required: ['firstName'],
                 properties: {
-                    _id: {
-                        bsonType: 'objectId'
-                    },
                     firstName: {
-                        bsonType: 'string'
+                        bsonType: 'string',
+                        description:'string and is not required'
                     },
                     lastName: {
-                        bsonType: 'string'
+                        bsonType: 'string',
+                        description:'string and is not required'
                     },
                     name: {
-                        bsonType: 'string'
+                        bsonType: 'string',
+                        description:'string and is not required'
                     }
                 }
             },
             services: {
                 bsonType: 'array',
-                additionalProperties: false,
-                properties: {
-                    google: {
-                        bsonType: 'object'
-                    },
-                    password: {
-                        bsonType: 'object',
-                        additionalProperties: false,
-                        properties: {
-                            bcrypt: {
-                                bsonType: 'string'
+                items: {
+                    bsonType: 'object',
+                    properties: {
+                        google: {
+                            bsonType: 'object',
+                            description:'object and is not required'
+                        },
+                        password: {
+                            bsonType: 'object',
+                            properties: {
+                                bcrypt: {
+                                    bsonType: 'string',
+                                    description:'string and is not required'
+                                }
                             }
+                        },
+                        facebook: {
+                            bsonType: 'object',
+                            description:'object and is not required'
+                        },
+                        resume: {
+                            bsonType: 'object',
+                            description:'object and is not required'
                         }
-                    },
-                    facebook: {
-                        bsonType: 'object'
-                    },
-                    resume: {
-                        bsonType: 'object'
                     }
                 }
             },
             emails: {
                 bsonType: 'array',
-                additionalProperties: false,
                 properties: {
                     address: {
-                        type: 'string',
-                        pattern: '^$|^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
-                        description: 'validation.unique_email'
+                        bsonType: 'string',
+                        description:'string and is not required'
                     },
                     verified: {
-                        bsonType: 'bool'
+                        bsonType: 'bool',
+                        description:'bool and is not required'
                     },
                     dropped: {
-                        bsonType: 'object'
+                        bsonType: 'object',
+                        description:'object and is not required'
                     }
                 }
             },
             permissions: {
                 bsonType: 'array',
-                additionalProperties: false,
-                properties: {
-                    projectId: {
-                        bsonType: 'string'
-                    },
-                    role: {
-                        bsonType: 'string'
+                items: {
+                    bsonType: 'object',
+                    properties: {
+                        projectId: {
+                            bsonType: 'string',
+                            description:'string and is not required'
+                        },
+                        role: {
+                            bsonType: 'string',
+                            description:'string and is not required'
+
+                        }
                     }
                 }
             }
@@ -98,7 +101,7 @@ const validation = {
  */
 async function initUserCollection (db) {
     try {
-        await db.createCollection(CollectionNames.users, {validator: validation})
+        await db.createCollection(CollectionNames.users, {})
         const col = db.collection(CollectionNames.users)
         await col.createIndex({'emails.address': 1}, {unique: true})
         await col.createIndex({'username': 1}, {unique: true})

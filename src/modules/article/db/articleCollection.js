@@ -31,12 +31,12 @@ const validation = {
  */
 async function initArticleCollection (db) {
     try {
-        await db.createCollection(CollectionNames.articles, {validator: validation})
+        await db.createCollection(CollectionNames.articles)
         const col = db.collection(CollectionNames.articles)
-        await col.createIndex({slug: 1}, {unique: true})
+        await col.createIndex({slug: 1, projectId: 1}, {unique: true})
+        await col.createIndex({id: 1}, {unique: true})
     } catch (e) {
-        console.log(e)
-        throw new Error(e)
+        throw new Error(e.message)
     }
 }
 

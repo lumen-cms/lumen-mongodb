@@ -2,7 +2,6 @@ const slugify = require('slugify')
 const {GraphQLScalarType} = require('graphql')
 
 function slugifyValue (value) {
-    console.log('inside of slug thingy')
     return slugify(value, {lower: true}) // value from the client
 }
 

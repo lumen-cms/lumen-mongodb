@@ -26,9 +26,11 @@ type Category{
 }
 
 type Article{
-    _id: String
-    id: String
-    slug: SlugPath
+    _id: String!
+    id: String!
+    projectId:String!
+    createdBy:String!
+    slug: SlugPath!
     description: String
     title: String
     deleted: Boolean

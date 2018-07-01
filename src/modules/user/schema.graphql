@@ -1,5 +1,5 @@
 #import User UserListPayload Permission from './schemas/user.graphql'
-#import MutationType, UpdateOnePayload, InsertOnePayload from '../../graphql/genericTypesAndEnums.graphql'
+#import MutationType, UpdateOnePayload, InsertOnePayload, DeleteOnePayload from '../../graphql/genericTypesAndEnums.graphql'
 
 
 type SignupUserPayload{
@@ -7,7 +7,7 @@ type SignupUserPayload{
     firstName:String!
     lastName:String
     email:String!
-    permissions:[Permission]
+    permissions:[Permission!]!
 }
 
 type SignupLoginPayload{
@@ -40,12 +40,17 @@ input CreateUserInput{
     lastName: String!
     email: String!
 }
+input DeleteUserInput{
+    id:String
+    username:String
+}
 
 type Mutation {
     updateUser(data:UpdateUserInput): UpdateOnePayload!
     createUser(data:CreateUserInput): InsertOnePayload!
     signup(data:SignupInput): SignupLoginPayload!
     login(data:LoginInput): SignupLoginPayload!
+    deleteUser(data:DeleteUserInput):DeleteOnePayload!
 }
 
 type Query {
