@@ -78,13 +78,14 @@ test.serial('update article as moderator', async t => {
     const {updateArticle} = await graphqlRequest(updateGql, {
         data: updateArticleData,
         where: {id: createArticle.insertedId}
-    })
+    }, staticToken.moderator)
     const {article} = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
     const {deleteArticle} = await graphqlRequest(deleteGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
     t.is(!!createArticle, true)
     t.is(typeof createArticle.insertedId === 'string', true)
     t.is(deleteArticle.deletedCount, 1)
     // compare article
+    t.is(updateArticle.modifiedCount, 1)
     t.is(article.slug, updateArticleData.slug)
     t.is(article.projectId, 'test')
     t.is(article.title, updateArticleData.title)
