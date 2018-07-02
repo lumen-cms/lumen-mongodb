@@ -3,8 +3,8 @@ type File {
     contentType:String
     name:String
     secret:String
-    width:Number
-    height:Number
+    width:Int
+    height:Int
 }
 type Media{
     file:File
@@ -26,11 +26,11 @@ type Category{
 }
 
 type Article{
-    _id: String!
-    id: String!
-    projectId:String!
-    createdBy:String!
-    slug: SlugPath!
+    _id: String
+    id: String
+    projectId:String
+    createdBy:String
+    slug: SlugPath
     description: String
     title: String
     deleted: Boolean
@@ -52,6 +52,7 @@ type Article{
 input ArticleInput{
     title: String!
     slug: SlugPath!
+    languageKey: String!
     description: String
     deleted: Boolean
     metaTitle: String
@@ -59,7 +60,6 @@ input ArticleInput{
     keywords: String
     published: Boolean
     publishedDate: Date
-    languageKey: String!
     isBlogEntry: Boolean
     authorsIds:[String]
     categoriesIds:[String]

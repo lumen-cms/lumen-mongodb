@@ -50,7 +50,7 @@ type Mutation {
     createUser(data:CreateUserInput): InsertOnePayload!
     signup(data:SignupInput): SignupLoginPayload!
     login(data:LoginInput): SignupLoginPayload!
-    deleteUser(data:DeleteUserInput):DeleteOnePayload!
+    deleteUser(where:DeleteUserInput):DeleteOnePayload!
 }
 
 type Query {

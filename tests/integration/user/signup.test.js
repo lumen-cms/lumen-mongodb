@@ -1,5 +1,5 @@
 import test from 'ava'
-import {graphqlRequest} from '../../graphqlRequest'
+import {graphqlRequest} from '../../../_util/graphqlRequest'
 
 const signupGql = `
 mutation signup($data:SignupInput) {
@@ -38,8 +38,8 @@ mutation login($data:LoginInput){
 }`
 
 const deleteGql = `
-mutation deleteUser($data:DeleteUserInput){
-  deleteUser(data:$data){acknowledged deletedCount}
+mutation deleteUser($where:DeleteUserInput){
+  deleteUser(where:$where){acknowledged deletedCount}
 }`
 
 const signupData = {
@@ -53,7 +53,7 @@ const deleteData = {
     username: 'djgarms+test@gmail.com'
 }
 
-test.serial('authentication roundtrips for user register and login', async t => {
+test.serial('test authentication roundtrips for user register and login', async t => {
     const {signup} = await graphqlRequest(signupGql, {data: signupData})
     const token = signup.token
     const {me} = await graphqlRequest(meGql, null, token)
@@ -63,7 +63,7 @@ test.serial('authentication roundtrips for user register and login', async t => 
             password: signupData.password
         }
     })
-    const {deleteUser} = await graphqlRequest(deleteGql, {data: deleteData})
+    const {deleteUser} = await graphqlRequest(deleteGql, {where: deleteData})
     t.is(!!login, true)
     t.is(!!signup.token, true)
     t.is(me.username, signupData.email)

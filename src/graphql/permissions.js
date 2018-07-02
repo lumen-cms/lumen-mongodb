@@ -35,7 +35,8 @@ const permissions = shield({
         // customers: and(isAuthenticated, isAdmin)
     },
     Mutation: {
-        createArticle: and(isAuthenticated)
+        createArticle: and(isAuthenticated),
+        // deleteArticle: and(isAuthenticated)
         // addFruitToBasket: isAuthenticated
     }
     // Fruit: isAuthenticated,

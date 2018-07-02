@@ -1,4 +1,4 @@
-const {verify} = require('jsonwebtoken')
+const {verify, sign} = require('jsonwebtoken')
 
 /**
  *
@@ -46,5 +46,14 @@ module.exports = {
             console.log(e)
             throw new Error('error_token_not_valid')
         }
+    },
+    /**
+     * @description generates a user token based on userId and app secret
+     * @param user
+     * @returns {*}
+     */
+    signTokenForUser: (user) => {
+        const s = process.env.APP_SECRET
+        return sign({user}, s)
     }
 }

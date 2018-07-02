@@ -1,18 +1,8 @@
 const {CollectionNames, UserRole} = require('../../../mongo/enum')
 const bcrypt = require('bcryptjs')
-const {sign} = require('jsonwebtoken')
+const {signTokenForUser} = require('../../../util/contextHelper')
 const {insertOneMutation} = require('../../../mongo/mutations/insertOneMutation')
 const {getUserObj} = require('../utils/userHelpers')
-
-/**
- * @description generates a user token based on userId and app secret
- * @param user
- * @returns {*}
- */
-const signTokenForUser = (user) => {
-    const s = process.env.APP_SECRET
-    return sign({user}, s)
-}
 
 module.exports = {
     Query: {

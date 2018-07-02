@@ -134,7 +134,7 @@ module.exports = {
          * @param {Db} db
          * @returns {Promise<void>}
          */
-        deleteUser: async (parent, {data:{id, username}}, {db}) => {
+        deleteUser: async (parent, {where:{id, username}}, {db}) => {
             const collection = db.collection(CollectionNames.users)
             const find = {}
             id && (find.id = id)
