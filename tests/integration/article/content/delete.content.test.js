@@ -15,8 +15,8 @@ test.serial('delete one content element which does not exist', async t => {
     const variables = {
         where: {
             articleId: article.id,
-            id: deleteIdOfContent,
-            materializedPath:materializedPath+'222' // make it wrong to fail test
+            id: deleteIdOfContent + 123, // fake it to fail test
+            materializedPath: materializedPath// make it wrong to fail test
         }
     }
     const {deleteContent} = await graphqlRequest(deleteContentGql, variables, staticToken.moderator)

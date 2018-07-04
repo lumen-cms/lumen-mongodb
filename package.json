@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "scripts": {
     "test": "TZ=utc NODE_ENV=development ava tests/**/*.js --verbose",
+    "test-content-remove": "TZ=utc NODE_ENV=development ava tests/integration/article/content/delete.content.test.js --verbose",
     "test:watch": "TZ=utc NODE_ENV=development ava tests/**/*.js --verbose --watch",
     "dev": "TZ=utc NODE_ENV=development nodemon -e js,json,graphql,gql src/index.js",
     "serve": "TZ=utc NODE_ENV=development node src/index.js",

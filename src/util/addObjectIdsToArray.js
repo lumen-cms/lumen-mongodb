@@ -12,20 +12,20 @@ function createObjectIdString () {
  *
  * @param {array} array
  * @param {string} childKey
- * @param {string} path
+ * @param {string|undefined|null} path
  * @return {*}
  */
 function addObjectIdsToArray (array, childKey, path = '') {
     return array.map((e, i) => {
-        const currentPath = `${path}${i},`
+
         if (Array.isArray(e[childKey])) {
-            e[childKey] = addObjectIdsToArray(e[childKey], childKey, currentPath)
+            e[childKey] = addObjectIdsToArray(e[childKey], childKey, `${path}${i},`)
         }
         return Object.assign(
             e,
             {
                 id: createObjectIdString(),
-                materializedPath: currentPath
+                materializedPath: path
             }
         )
     })
@@ -37,20 +37,31 @@ function addObjectIdsToArray (array, childKey, path = '') {
  * @return {{queryPath: string, mutationPath: string, lastIndex: number}}
  */
 function getMaterializedMongoModifier (materializedPath) {
-    let path = 'contentElements'
-    materializedPath.split(',')
-        .forEach((key, i) => {
-            if (!key) return
-            path += (i > 0) ? `.children.${key}` : `.${key}`
-        })
+    let queryPath = 'contentElements'
+    let mutationPath = 'contentElements'
+    const splittedPath = materializedPath.split(',')
+    splittedPath.forEach((key, i) => {
+        if (!key) return
+        queryPath += '.children'
+        if ((i + 1) === splittedPath.length) {
+            mutationPath += '.children'
+        } else {
+            mutationPath += `.${key}.children`
+        }
+    })
 
-    const splitted = path.split('.')
-    const lastIndex = splitted.pop()
     return {
-        queryPath: path + '.id',
-        mutationPath: splitted.join('.'),
-        lastIndex: Number(lastIndex)
+        queryPath: queryPath + '.id',
+        mutationPath
     }
+
+    // const splitted = path.split('.')
+    // const lastIndex = splitted.pop()
+    // return {
+    //     queryPath: path + '.id',
+    //     mutationPath: splitted.join('.'),
+    //     lastIndex: Number(lastIndex)
+    // }
 }
 
 module.exports = {
