@@ -1,5 +1,4 @@
-const MongoClient = require('mongodb').MongoClient
-const ObjectID = require('mongodb').ObjectID
+const {MongoClient, ObjectID,} = require('mongodb')
 const initUserCollection = require('../modules/user/db/userCollection.js').initUserCollection
 const initArticleCollection = require('../modules/article/db/articleCollection').initArticleCollection
 const DB = {

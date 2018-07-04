@@ -15,4 +15,12 @@ mutation ($where:ContentMoveInput!, $data:ContentInput!,$isCopy:Boolean){
   }
 }`
 
-module.exports = {deleteContentGql, moveContentGql}
+const createContentGql = `
+mutation ($where:ContentCreateInput!, $data:ContentInput!){
+  createContent(where:$where, data:$data){
+    updated
+  }
+}`
+
+
+module.exports = {deleteContentGql, moveContentGql, createContentGql}

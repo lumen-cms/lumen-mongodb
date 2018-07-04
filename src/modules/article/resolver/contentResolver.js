@@ -13,10 +13,27 @@ module.exports = {
          * @param {object} data
          * @param {Db} db
          * @param {object} rootAuthMutation
-         * @return {Promise<void>}
+         * @return {Promise<{updated:boolean}>}
          */
         createContent: async (parent, {where: {articleId, position, materializedPath}, data}, {db, rootAuthMutation}) => {
-
+            const {mutationPath} = getMaterializedMongoModifier(materializedPath)
+            const find = Object.assign({
+                id: articleId
+            }, rootAuthMutation)
+            data.materializedPath = materializedPath.replace(/[0-9]+(?!.*[0-9])/, position) // create materializedPath
+            data.id = createObjectIdString() // create ObjectID
+            const collection = db.collection(CollectionNames.articles)
+            const res = await collection.findOneAndUpdate(find, {
+                $push: {
+                    [mutationPath]: {
+                        $each: [data],
+                        $position: position
+                    }
+                }
+            }, {
+                projection: {_id: false, id: 1}
+            })
+            return {updated: !!res.value}
         },
         /**
          *
@@ -34,20 +51,17 @@ module.exports = {
                 id: articleId,
                 [queryPath]: id
             }, rootAuthMutation)
-            // check if exists
+            // find and update content element
             const collection = db.collection(CollectionNames.articles)
-            const res = await collection.findOneAndUpdate(
-                find,
-                {
-                    $pull: {
-                        [mutationPath]: {id}
-                    }
-                },
-                {
-                    projection: {
-                        id: 1, _id: 0
-                    }
-                })
+            const res = await collection.findOneAndUpdate(find, {
+                $pull: {
+                    [mutationPath]: {id}
+                }
+            }, {
+                projection: {
+                    id: 1, _id: 0
+                }
+            })
 
             return {updated: !!res.value}
         },
