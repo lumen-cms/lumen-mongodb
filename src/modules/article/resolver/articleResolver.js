@@ -1,7 +1,7 @@
+const {addObjectIdsToArray} = require('../../../util/addObjectIdsToArray')
 const {updateOneMutation} = require('../../../mongo/mutations/updateOneMutation')
 const {insertOneMutation} = require('../../../mongo/mutations/insertOneMutation')
 const {CollectionNames} = require('../../../mongo/enum')
-
 
 module.exports = {
     Query: {
@@ -11,11 +11,11 @@ module.exports = {
          * @param {string} slug
          * @param {string} id
          * @param {Db} db
-         * @param req
+         * @param {} rootAuthQuery
          * @return {Promise<void>}
          */
-        article: async (parent, {where: {slug, id}}, {db}) => {
-            const find = {}
+        article: async (parent, {where: {slug, id}}, {db, rootAuthQuery}) => {
+            const find = rootAuthQuery
             slug && (find.slug = slug)
             id && (find.id = id)
             const article = await db.collection(CollectionNames.articles).findOne(find)
@@ -30,18 +30,20 @@ module.exports = {
          * @param ctx
          * @param {Db} db
          * @param {Request} req
-         * @param ObjectID
+         * @param {} rootAuthQuery
          * @returns {Promise<void>}
          */
-        findArticles: async (parent, ctx, {db, req}) => {
+        findArticles: async (parent, ctx, {rootAuthQuery, db}) => {
             try {
+                const find = rootAuthQuery
+                // todo build in some filter and extend find
                 const data = await db.collection(CollectionNames.articles)
-                    .find()
+                    .find(find)
                     .toArray()
-                console.log(data)
                 return data
             } catch (e) {
                 console.error(e)
+                throw new Error('find_articles')
             }
         }
     },
@@ -56,6 +58,11 @@ module.exports = {
          * @returns {Promise<void>}
          */
         createArticle: async (parent, {data}, {db, projectId, user}) => {
+            if (Array.isArray(data.contentElements)) {
+                // add ObjectID to each content element
+                data.contentElements = addObjectIdsToArray(data.contentElements, 'children')
+            }
+
             return insertOneMutation(db.collection(CollectionNames.articles), data, {projectId, user})
         },
         /**
@@ -63,21 +70,52 @@ module.exports = {
          * @param parent
          * @param id
          * @param {Db} db
+         * @param {} rootAuthMutation
          * @return {Promise<void>}
          */
-        deleteArticle: async (parent, {where: {id}}, {db}) => {
+        deleteArticle: async (parent, {where: {id}}, {db, rootAuthMutation}) => {
             try {
-                const r = await db.collection(CollectionNames.articles).deleteOne({id})
+                const find = Object.assign({id}, rootAuthMutation)
+                const r = await db.collection(CollectionNames.articles).deleteOne(find)
                 return r
             } catch (e) {
                 console.log(e)
                 throw new Error('delete_article')
             }
         },
-        updateArticle: async (parent, {where, data}, {db}) => {
+        /**
+         *
+         * @param parent
+         * @param id
+         * @param {Db} db
+         * @param {} rootAuthMutation
+         * @return {Promise<void>}
+         */
+        deleteArticlesOnIds: async (parent, {where: {ids}}, {db, rootAuthMutation}) => {
+            try {
+                const find = rootAuthMutation
+                find.id = {$in: ids}
+                const collection = db.collection(CollectionNames.articles)
+                const r = await collection.deleteMany(find)
+                return r
+            } catch (e) {
+                console.log(e)
+                throw new Error('delete_article')
+            }
+        },
+        /**
+         *
+         * @param parent
+         * @param where
+         * @param data
+         * @param db
+         * @param rootAuthMutation
+         * @return {Promise<{insertedId: string, acknowledged: boolean}|*>}
+         */
+        updateArticle: async (parent, {where, data}, {db, rootAuthMutation}) => {
             const collection = db.collection(CollectionNames.articles)
             try {
-                const r = await updateOneMutation(collection, where, data)
+                const r = await updateOneMutation(collection, Object.assign({}, where, rootAuthMutation), data)
                 return r
             } catch (e) {
                 throw new Error('update_article')

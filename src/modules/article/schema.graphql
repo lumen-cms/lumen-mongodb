@@ -1,26 +1,19 @@
-#import MutationType, InsertOnePayload, DeleteOnePayload, UpdateOnePayload from '../../graphql/genericTypesAndEnums.graphql'
-#import ArticleInput ArticleListPayload Article from './schemas/article.graphql'
-
-type ArticlePayload{
-    id:String!
-}
-
-input ArticleWhereInput{
-    slug:String
-    id:String
-}
+#import * from './schemas/content.graphql'
+#import * from './schemas/article.graphql'
 
 type Query {
     article(where:ArticleWhereInput): Article!
-    findArticles:ArticleListPayload!
+    findArticles:[ArticleListPayload!]!
 }
 
-input DeleteArticleInput{
-    id:String!
-}
+
 
 type Mutation{
     createArticle(data:ArticleInput): InsertOnePayload!
     deleteArticle(where:DeleteArticleInput):DeleteOnePayload!
     updateArticle(where:ArticleWhereInput,data:ArticleInput):UpdateOnePayload!
+    deleteArticlesOnIds(where:DeleteManyArticleInput):DeleteOnePayload!
+    deleteContent(where:DeleteContentInput!):SimpleUpdatePayload!
+    moveContent(data:ContentInput!,where:ContentMoveInput!,isCopy:Boolean):UpdateOnePayload!
+    createContent(data:ContentInput!,where:ContentCreateInput!):SimpleUpdatePayload!
 }

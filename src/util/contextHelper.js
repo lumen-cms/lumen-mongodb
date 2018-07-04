@@ -1,4 +1,22 @@
+const {UserRole} = require('../mongo/enum')
 const {verify, sign} = require('jsonwebtoken')
+
+/**
+ *
+ * @param permissions
+ * @return {*}
+ */
+function getPermissionOfUser (permissions) {
+    if (permissions.includes(UserRole.OPERATOR)) {
+    } else if (permissions.includes(UserRole.ADMIN)) {
+        return UserRole.ADMIN
+    } else if (permissions.includes(UserRole.MODERATOR)) {
+        return UserRole.MODERATOR
+    } else if (permissions.includes(UserRole.GUEST)) {
+        return UserRole.GUEST
+    }
+    return null
+}
 
 /**
  *
@@ -26,10 +44,11 @@ module.exports = {
     },
     /**
      *
-     * @param {Request} req
-     * @return {AuthUser|null}
+     * @param req
+     * @param projectId
+     * @return {user:AuthUser,permissions.<string>}
      */
-    getUserFromToken: function (req) {
+    getUserAndPermission: function (req, projectId) {
         try {
             const Authorization = req.get('Authorization')
             if (Authorization) {
@@ -38,9 +57,16 @@ module.exports = {
                  * @type AuthUser
                  */
                 const {user} = verify(token, process.env.APP_SECRET)
-                return user || null
+                if (user) {
+                    const permissions = user.permissions
+                        .filter(p => p.projectId === projectId)
+                        .map(p => p.role)
+                    const permission = getPermissionOfUser(permissions)
+                    return permission ? {user, permission} : {}
+                }
+                return {}
             } else {
-                return null
+                return {}
             }
         } catch (e) {
             console.log(e)

@@ -27,6 +27,7 @@
     "dotenv": "^6.0.0",
     "graphql-iso-date": "^3.5.0",
     "graphql-shield": "^2.2.5",
+    "graphql-type-json": "^0.2.1",
     "graphql-yoga": "^1.14.10",
     "jsonwebtoken": "^8.3.0",
     "mongodb": "^3.1.0",

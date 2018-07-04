@@ -4,8 +4,9 @@ const {GraphQLServer, PubSub, withFilter} = require('graphql-yoga')
 require('dotenv').config()
 const {startDB} = require('./mongo/initDb')
 const resolvers = require('./graphql/resolvers')
+const {getAuthBaseMutation, getAuthBaseQuery} = require('./util/queryAuthHelper')
 const {permissions} = require('./graphql/permissions')
-const {getProjectId, getUserFromToken} = require('./util/contextHelper')
+const {getProjectId, getUserAndPermission} = require('./util/contextHelper')
 
 async function startServer () {
 
@@ -25,15 +26,23 @@ async function startServer () {
      * @param req
      * @returns {{req: *, db: Db, ObjectID: ObjectID, pubSub: PubSub, withFilter: (asyncIteratorFn: ResolverFn, filterFn: FilterFn) => ResolverFn}}
      */
-    const context = (req) => ({
-        req: req.request,
-        db: initDb.db,
-        ObjectID: initDb.ObjectID,
-        pubSub,
-        withFilter,
-        projectId: getProjectId(req.request),
-        user: getUserFromToken(req.request)
-    })
+    const context = (req) => {
+        const projectId = getProjectId(req.request)
+        const {user, permission} = getUserAndPermission(req.request, projectId)
+
+        return {
+            req: req.request,
+            db: initDb.db,
+            ObjectID: initDb.ObjectID,
+            pubSub,
+            withFilter,
+            projectId,
+            user,
+            permission,
+            rootAuthMutation: getAuthBaseMutation(projectId, user, permission),
+            rootAuthQuery: getAuthBaseQuery(projectId, user, permission)
+        }
+    }
 
     /**
      *

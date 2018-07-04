@@ -1,14 +1,41 @@
 /**
- * @description reliable fast lookup if document exists
+ * @description fast lookup if document exists
  *
  * @param {Collection} collection
  * @param {object} find
  * @return {Promise<boolean>}
  */
 async function documentExists (collection, find) {
-    Object.keys(find).forEach(key => !find[key] && delete find[key]) // remove unneeded find
-    const documentCount = await collection.find(find, {id: 1}).limit(1).count()
-    return documentCount > 0
+    const count = await documentCount(collection, find)
+    return count > 0
 }
 
-module.exports = {documentExists}
+/**
+ * @description fast lookup if document exists
+ *
+ * @param {Collection} collection
+ * @param {object} find
+ * @return {Promise<boolean>}
+ */
+async function documentExistsOnce (collection, find) {
+    const count = await documentCount(collection, find)
+    return count === 1
+}
+
+/**
+ *
+ * @param {Collection} collection
+ * @param find
+ * @return {Promise<number>}
+ */
+async function documentCount (collection, find) {
+    Object.keys(find).forEach(key => !find[key] && delete find[key]) // remove unneeded find
+    const count = await collection
+        .find(find)
+        .project({_id: 1})
+        .count()
+    return count
+}
+
+
+module.exports = {documentExists, documentCount, documentExistsOnce}

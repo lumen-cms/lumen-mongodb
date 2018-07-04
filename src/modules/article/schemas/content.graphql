@@ -1,0 +1,50 @@
+type Content{
+    id:String
+    materializedPath:String
+    type:String
+    published:Boolean
+    description:String
+    teaser:String
+    properties:JSON
+    styles:JSON
+    #fileReferences:[FileReferences!]
+    #backgroundFileReferences: [FileReferences!]
+    children:[Content!]
+}
+
+input ContentInput{
+    id:String
+    type:String!
+    materializedPath:String
+    published:Boolean
+    description:String
+    teaser:String
+    properties:JSON
+    styles:JSON
+    #fileReferences:[FileReferences!]
+    #backgroundFileReferences: [FileReferences!]
+    children:[ContentInput!]
+}
+
+input DeleteContentInput{
+    articleId: String!
+    id: String!
+    materializedPath: String!
+}
+
+input ContentMoveItemInput{
+    articleId: String!
+    id: String!
+    materializedPath: String!
+}
+
+input ContentMoveInput{
+    to:ContentMoveItemInput!
+    from:ContentMoveItemInput!
+}
+
+input ContentCreateInput{
+    articleId: String!
+    materializedPath: String!
+    position: Int!
+}

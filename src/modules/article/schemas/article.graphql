@@ -43,9 +43,10 @@ type Article{
     isBlogEntry: Boolean
     createdAt: GraphQLDateTime
     updatedAt: GraphQLDateTime
-    authors: [Author!]!
-    categories:[Category!]!
-    gallery:[File!]!
+    contentElements:[Content!]
+    authors: [Author!]
+    categories:[Category!]
+    gallery:[File!]
     previewImage:File
 }
 
@@ -63,6 +64,7 @@ input ArticleInput{
     isBlogEntry: Boolean
     authorsIds:[String]
     categoriesIds:[String]
+    contentElements:[ContentInput!]
 }
 
 type ArticleListPayload{
@@ -71,4 +73,22 @@ type ArticleListPayload{
     title: String
     deleted: Boolean
     languageKey:String
+    published: Boolean
+}
+
+input DeleteArticleInput{
+    id:String!
+}
+
+input DeleteManyArticleInput{
+    ids:[String!]!
+}
+
+type ArticlePayload{
+    id:String!
+}
+
+input ArticleWhereInput{
+    slug:String
+    id:String
 }
