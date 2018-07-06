@@ -11,28 +11,26 @@ const s3 = new AWS.S3({
  *
  * @param url
  * @param folder
- * @return {Promise<any>}
+ * @return {Promise<ManagedUpload.SendData>}
  */
-const awsUploadUrlToS3 = (url, folder) => new Promise(async (resolve, reject) => {
+async function awsUploadUrlToS3 (url, folder) {
     const folderPath = folder || process.env.PROJECT_ID
     const {stream, headers} = await makeWritableStream(url)
     // const header = await getHeaderOfUrl(url)
-    s3.upload({
-        Key: folderPath + '/' + createObjectIdString(),
-        Body: stream,
-        Bucket: process.env.AWS_BUCKET,
-        ContentDisposition: headers['content-disposition'],
-        ContentLength: headers['content-length'],
-        ContentType: headers['content-type'],
-        CacheControl: 'max-age=31536000'
-    }, {}, (err, data) => {
-        if (err) {
-            reject(err)
-        } else {
-            resolve(data)
-        }
-    })
-
-})
+    try {
+        const data = await s3.upload({
+            Key: folderPath + '/' + createObjectIdString(),
+            Body: stream,
+            Bucket: process.env.AWS_BUCKET,
+            ContentDisposition: headers['content-disposition'],
+            ContentLength: headers['content-length'],
+            ContentType: headers['content-type'],
+            CacheControl: 'max-age=31536000'
+        }).promise()
+        return data
+    } catch (e) {
+        throw new Error(e)
+    }
+}
 
 module.exports = {awsUploadUrlToS3}
