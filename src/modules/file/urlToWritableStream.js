@@ -14,16 +14,16 @@ const makeWritableStream = (url) => new Promise((resolve, reject) => {
         }
     })
 })
-const getHeaderOfUrl = (url) => new Promise((resolve, reject) => {
-    return request.head(url, (err, res) => {
-        if (err) {
-            reject(err)
-        } else {
-            resolve(res.headers)
-        }
-    })
-})
+// const getHeaderOfUrl = (url) => new Promise((resolve, reject) => {
+//     return request.head(url, (err, res) => {
+//         if (err) {
+//             reject(err)
+//         } else {
+//             resolve(res.headers)
+//         }
+//     })
+// })
+//
+// const getRequest = (url) => request.get(url)
 
-const getRequest = (url) => request.get(url)
-
-module.exports = {getRequest, makeWritableStream, getHeaderOfUrl}
+module.exports = {makeWritableStream}

@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk')
-const {makeWritableStream, getHeaderOfUrl, getRequest} = require('./urlToWritableStream')
+const {makeWritableStream} = require('./urlToWritableStream')
 const {createObjectIdString} = require('../../util/addObjectIdsToArray')
 const s3 = new AWS.S3({
     region: process.env.AWS_REGION,
@@ -16,7 +16,6 @@ const s3 = new AWS.S3({
 async function awsUploadUrlToS3 (url, folder) {
     const folderPath = folder || process.env.PROJECT_ID
     const {stream, headers} = await makeWritableStream(url)
-    // const header = await getHeaderOfUrl(url)
     try {
         const data = await s3.upload({
             Key: folderPath + '/' + createObjectIdString(),
