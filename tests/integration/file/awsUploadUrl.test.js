@@ -1,4 +1,5 @@
 import test from 'ava'
+
 require('dotenv').config()
 import {awsUploadUrlToS3} from '../../../src/modules/file/awsS3UrlUpload'
 
@@ -8,4 +9,6 @@ test.serial('upload remote file with tus endpoint', async t => {
     const data = await awsUploadUrlToS3(externalImg)
 
     t.is(!!data, true)
+    t.is(typeof data.Location, 'string')
+    t.is(typeof data.key, 'string')
 })

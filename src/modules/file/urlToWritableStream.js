@@ -6,13 +6,24 @@ const request = require('request').defaults({encoding: null})
  * @return {Promise<any>}
  */
 const makeWritableStream = (url) => new Promise((resolve, reject) => {
-    return request.get(url)
-        .on('response', (response) => {
-            resolve(response)
-        })
-        .on('error', e => {
-            reject(e)
-        })
+    return request.get(url, (err, res) => {
+        if (err) {
+            reject(err)
+        } else {
+            resolve({stream: res.body, headers: res.headers})
+        }
+    })
+})
+const getHeaderOfUrl = (url) => new Promise((resolve, reject) => {
+    return request.head(url, (err, res) => {
+        if (err) {
+            reject(err)
+        } else {
+            resolve(res.headers)
+        }
+    })
 })
 
-module.exports = {makeWritableStream}
+const getRequest = (url) => request.get(url)
+
+module.exports = {getRequest, makeWritableStream, getHeaderOfUrl}
