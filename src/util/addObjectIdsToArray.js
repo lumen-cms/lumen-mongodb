@@ -34,34 +34,25 @@ function addObjectIdsToArray (array, childKey, path = '') {
 /**
  *
  * @param materializedPath
- * @return {{queryPath: string, mutationPath: string, lastIndex: number}}
+ * @return {{queryPath: string, mutationPath: string, getPath: string}}
  */
 function getMaterializedMongoModifier (materializedPath) {
     let queryPath = 'contentElements'
     let mutationPath = 'contentElements'
+    let getPath = 'contentElements'
     const splittedPath = materializedPath.split(',')
     splittedPath.forEach((key, i) => {
         if (!key) return
         queryPath += '.children'
-        if ((i + 1) === splittedPath.length) {
-            mutationPath += '.children'
-        } else {
-            mutationPath += `.${key}.children`
-        }
+        mutationPath += (i + 1) === splittedPath.length ? '.children' : `.${key}.children`
+        getPath +=  `[${key}].children`
     })
 
     return {
         queryPath: queryPath + '.id',
-        mutationPath
+        mutationPath,
+        getPath
     }
-
-    // const splitted = path.split('.')
-    // const lastIndex = splitted.pop()
-    // return {
-    //     queryPath: path + '.id',
-    //     mutationPath: splitted.join('.'),
-    //     lastIndex: Number(lastIndex)
-    // }
 }
 
 module.exports = {

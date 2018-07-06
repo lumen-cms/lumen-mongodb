@@ -1,6 +1,7 @@
 const {getMaterializedMongoModifier, createObjectIdString} = require('../../../util/addObjectIdsToArray')
 const {CollectionNames} = require('../../../mongo/enum')
 const {documentExistsOnce} = require('../../../mongo/mutations/documentExists')
+const _get = require('lodash.get')
 module.exports = {
     Mutation: {
 
@@ -20,7 +21,7 @@ module.exports = {
             const find = Object.assign({
                 id: articleId
             }, rootAuthMutation)
-            data.materializedPath = materializedPath.replace(/[0-9]+(?!.*[0-9])/, position) // create materializedPath
+            data.materializedPath = materializedPath // create materializedPath
             data.id = createObjectIdString() // create ObjectID
             const collection = db.collection(CollectionNames.articles)
             const res = await collection.findOneAndUpdate(find, {
@@ -70,32 +71,40 @@ module.exports = {
          * @param parent
          * @param {{articleId:string,id:string,materializedPath:string}} from
          * @param {{articleId:string,id:string,materializedPath:string}} to
-         * @param {object} data
          * @param {boolean} isCopy
+         * @param {number} position
          * @param {Db} db
          * @param rootAuthMutation
          * @return {Promise<void>}
          */
-        moveContent: async (parent, {where: {from, to}, data, isCopy}, {db, rootAuthMutation}) => {
+        moveContent: async (parent, {where: {from, to}, isCopy, position}, {db, rootAuthMutation}) => {
             const collection = db.collection(CollectionNames.articles)
             /**
              *
-             * @type {{queryPath: string, mutationPath: string, lastIndex: number}|*}
+             * @type {{queryPath: string, mutationPath: string, getPath: string}|*}
              */
             const fromMaterialized = getMaterializedMongoModifier(from.materializedPath)
             /**
              *
-             * @type {{queryPath: string, mutationPath: string, lastIndex: number}|*}
+             * @type {{queryPath: string, mutationPath: string, getPath: string}|*}
              */
             const toMaterialized = getMaterializedMongoModifier(to.materializedPath)
 
-            const existsFrom = await documentExistsOnce(collection, Object.assign({
-                id: from.articleId,
-                [fromMaterialized.queryPath]: from.id
-            }, rootAuthMutation))
+            const existsFrom = await collection.findOne(
+                Object.assign({
+                        id: from.articleId,
+                        [fromMaterialized.queryPath]: from.id
+                    },
+                    rootAuthMutation
+                ), {
+                    projection: {
+                        id: 1, 'contentElements': 1
+                    }
+                })
             if (!existsFrom) {
                 throw new Error('move-content-from-missing')
             }
+
             const existsTo = await documentExistsOnce(collection, Object.assign({
                 id: to.articleId,
                 [toMaterialized.queryPath]: to.id
@@ -103,6 +112,17 @@ module.exports = {
             if (!existsTo) {
                 throw new Error('move-content-to-missing')
             }
+
+            // fetch data from nested content
+            /**
+             *
+             * @type {array}
+             */
+            const lastContent = _get(existsFrom, fromMaterialized.getPath)
+            if (!Array.isArray(lastContent)) {
+                throw new Error('content-move-element-not-found')
+            }
+            const data = lastContent.find(i => i.id === from.id)
 
             // remove old field in case of move.
             if (!isCopy) {
@@ -116,14 +136,14 @@ module.exports = {
             }
             // add new field to specific position
             // update materialized path of new location
-            data.materializedPath = to.materializedPath.replace(/[0-9]+(?!.*[0-9])/, i => parseInt(i) + 1)
-            isCopy && (data.id = createObjectIdString())
+            data.materializedPath = to.materializedPath //.replace(/[0-9]+(?!.*[0-9])/, i => parseInt(i) + 1)
+            data.id = createObjectIdString()
             // update collection
             const insertIntoStatement = {
                 $push: {
                     [toMaterialized.mutationPath]: {
                         $each: [data],
-                        $position: toMaterialized.lastIndex + 1
+                        $position: position
                     }
                 }
             }

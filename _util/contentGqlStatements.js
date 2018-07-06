@@ -6,8 +6,8 @@ mutation ($where:DeleteContentInput!){
 }`
 
 const moveContentGql = `
-mutation ($where:ContentMoveInput!, $data:ContentInput!,$isCopy:Boolean){
-  moveContent(where:$where, data:$data, isCopy:$isCopy){
+mutation ($where:ContentMoveInput!, $isCopy:Boolean, $position: Int!){
+  moveContent(where:$where, isCopy:$isCopy, position:$position){
     acknowledged
     matchedCount
     modifiedCount

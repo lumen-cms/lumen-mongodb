@@ -20,7 +20,7 @@ test.serial('create article with content and make sure id and path on content ex
         data: newData,
         where: {
             articleId: createArticle.insertedId,
-            materializedPath: '0,',
+            materializedPath: '',
             position: 0
         }
     }, staticToken.moderator)
@@ -35,25 +35,5 @@ test.serial('create article with content and make sure id and path on content ex
     // compare article
     t.is(article.contentElements.length, 4)
     t.is(article.contentElements[0].description, newData.description)
-    article.contentElements.forEach((content, firstLevelIteration) => {
-        t.is(typeof content.id, 'string')
-        t.is(typeof content.materializedPath, 'string')
-        t.is(content.materializedPath, `${firstLevelIteration},`)
-        if (Array.isArray(content.children)) {
-            content.children.forEach((child, secondLevelIteration) => {
-                t.is(typeof child.id, 'string')
-                t.is(typeof child.materializedPath, 'string')
-                t.is(child.materializedPath, `${firstLevelIteration},${secondLevelIteration},`)
-                t.is(fixtureArticle.contentElements[firstLevelIteration].children[secondLevelIteration].children[0].description, child.children[0].description)
-                if (Array.isArray(child.children)) {
-                    child.children.forEach((subChild, thirdLevelIteration) => {
-                        t.is(typeof subChild.id, 'string')
-                        t.is(typeof subChild.materializedPath, 'string')
-                        t.is(subChild.materializedPath, `${firstLevelIteration},${secondLevelIteration},${thirdLevelIteration},`)
-                        t.is(fixtureArticle.contentElements[firstLevelIteration].children[secondLevelIteration].children[thirdLevelIteration].description, subChild.description)
-                    })
-                }
-            })
-        }
-    })
+    t.is(fixtureArticle.contentElements[0].description, article.contentElements[1].description)
 })

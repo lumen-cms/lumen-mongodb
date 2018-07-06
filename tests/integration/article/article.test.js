@@ -78,8 +78,6 @@ test.serial('find articles as moderator and not-authorized user', async t => {
         createdArticlesIds.push(createArticle.insertedId)
     }
 
-    const findWithModerator = await graphqlRequest(findArticlesGql, null, staticToken.moderator)
-        .then(r => r.findArticles)
     const findAnonymous = await graphqlRequest(findArticlesGql, null)
         .then(r => r.findArticles)
 
@@ -88,5 +86,4 @@ test.serial('find articles as moderator and not-authorized user', async t => {
     // compare article
     t.is(createdArticlesIds.length, 5)
     t.is(findAnonymous.length, 3)
-    t.is(findWithModerator.length, 5)
 })
