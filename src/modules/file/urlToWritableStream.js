@@ -1,16 +1,17 @@
-const request = require('request').defaults({encoding: null})
-
+const {get} = require('request').defaults({encoding: null})
+const probe = require('probe-image-size')
 /**
  *
  * @param url
- * @return {Promise<any>}
+ * @return {Promise<{stream:any,headers:object,dimensions:object}>}
  */
 const makeWritableStream = (url) => new Promise((resolve, reject) => {
-    return request.get(url, (err, res) => {
+    return get(url, (err, res) => {
         if (err) {
             reject(err)
         } else {
-            resolve({stream: res.body, headers: res.headers})
+            const dimensions = probe.sync(res.body)
+            resolve({stream: res.body, headers: res.headers, dimensions})
         }
     })
 })

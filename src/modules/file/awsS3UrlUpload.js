@@ -7,18 +7,19 @@ const s3 = new AWS.S3({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 })
 
+
+
 /**
  *
  * @param url
- * @param folder
- * @return {Promise<ManagedUpload.SendData>}
+ * @return {Promise<{data: ManagedUpload.SendData, dimensions: (Object|*)}>}
  */
-async function awsUploadUrlToS3 (url, folder) {
-    const folderPath = folder || process.env.PROJECT_ID
-    const {stream, headers} = await makeWritableStream(url)
+async function awsUploadUrlToS3 (url) {
+    const {stream, headers, dimensions} = await makeWritableStream(url)
+
     try {
         const data = await s3.upload({
-            Key: folderPath + '/' + createObjectIdString(),
+            Key: createObjectIdString(),
             Body: stream,
             Bucket: process.env.AWS_BUCKET,
             ContentDisposition: headers['content-disposition'],
@@ -26,7 +27,7 @@ async function awsUploadUrlToS3 (url, folder) {
             ContentType: headers['content-type'],
             CacheControl: 'max-age=31536000'
         }).promise()
-        return data
+        return {data, dimensions}
     } catch (e) {
         throw new Error(e)
     }
