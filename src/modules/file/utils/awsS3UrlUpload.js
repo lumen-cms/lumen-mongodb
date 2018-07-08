@@ -1,6 +1,6 @@
 const AWS = require('aws-sdk')
 const {makeWritableStream} = require('./urlToWritableStream')
-const {createObjectIdString} = require('../../util/addObjectIdsToArray')
+const {createObjectIdString} = require('../../../util/addObjectIdsToArray')
 const s3 = new AWS.S3({
     region: process.env.AWS_REGION,
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
