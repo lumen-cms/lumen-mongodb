@@ -42,6 +42,38 @@ query article($where:ArticleWhereInput){
      type
      description
      materializedPath
+     fileReferences{
+        id
+        title
+        caption
+        file{
+            id
+            url
+            height
+            key
+            name
+            size
+            url
+            width
+            contentType
+        }
+     }
+     backgroundFileReferences{
+        id
+        title
+        caption
+        file{
+            id
+            url
+            height
+            key
+            name
+            size
+            url
+            width
+            contentType
+        }
+     }
      children{
        id
        type
@@ -52,6 +84,38 @@ query article($where:ArticleWhereInput){
         type
         description
         materializedPath
+        fileReferences{
+          id
+          title
+          caption
+          file{
+            id
+            url
+            height
+            key
+            name
+            size
+            url
+            width
+            contentType
+          }
+        }
+        backgroundFileReferences{
+        id
+        title
+        caption
+        file{
+            id
+            url
+            height
+            key
+            name
+            size
+            url
+            width
+            contentType
+        }
+     }
        }
      }
     }

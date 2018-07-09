@@ -1,15 +1,3 @@
-type File {
-    id:String
-    contentType:String
-    name:String
-    secret:String
-    width:Int
-    height:Int
-}
-type Media{
-    file:File
-}
-
 type Author {
     name:String
     id:String

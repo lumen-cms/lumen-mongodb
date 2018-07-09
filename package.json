@@ -10,6 +10,7 @@
     "test:content-create": "TZ=utc NODE_ENV=development ava tests/integration/article/content/create.content.test.js --verbose",
     "test:content-update": "TZ=utc NODE_ENV=development ava tests/integration/article/content/update.content.test.js --verbose",
     "test:file-crud": "TZ=utc NODE_ENV=development ava tests/integration/file/file.test.js --verbose",
+    "test:content-file-ref": "TZ=utc NODE_ENV=development ava tests/integration/article/content/fileReference.content.test.js --verbose",
     "test:watch": "TZ=utc NODE_ENV=development ava tests/**/*.js --verbose --watch",
     "dev": "TZ=utc NODE_ENV=development nodemon -e js,json,graphql,gql src/index.js",
     "serve": "TZ=utc NODE_ENV=development node src/index.js",

@@ -1,5 +1,7 @@
+
+
 type FileReference{
-    id: String!
+    id: String
     file: File!
     alternative: String
     caption: String
@@ -13,9 +15,21 @@ type FileReference{
     backgroundStyles: [String!]
 }
 
+input FileReferenceFileInput{
+    id:String!
+    url:String!
+    key:String!
+    size: Int!
+    contentType: String!
+    name:String
+    width: Int
+    height: Int
+}
+
 input FileReferenceInput{
-    id: String!
-    file: FileInput!
+    id:String
+    file: FileReferenceFileInput!
+    title: String
     alternative: String
     caption: String
     crop:String
@@ -24,7 +38,6 @@ input FileReferenceInput{
     linkSlug: String
     linkType: String
     resize: String
-    title: String
     backgroundStyles: [String!]
 }
 

@@ -21,6 +21,12 @@ function addObjectIdsToArray (array, childKey, path = '') {
         if (Array.isArray(e[childKey])) {
             e[childKey] = addObjectIdsToArray(e[childKey], childKey, `${path}${i},`)
         }
+        if (e.fileReferences && e.fileReferences.length) {
+            e.fileReferences = e.fileReferences.map(i => Object.assign({}, i, {id: createObjectIdString()}))
+        }
+        if (e.backgroundFileReferences && e.backgroundFileReferences.length) {
+            e.backgroundFileReferences = e.backgroundFileReferences.map(i => Object.assign({}, i, {id: createObjectIdString()}))
+        }
         return Object.assign(
             e,
             {
@@ -45,7 +51,7 @@ function getMaterializedMongoModifier (materializedPath) {
         if (!key) return
         queryPath += '.children'
         mutationPath += (i + 1) === splittedPath.length ? '.children' : `.${key}.children`
-        getPath +=  `[${key}].children`
+        getPath += `[${key}].children`
     })
 
     return {

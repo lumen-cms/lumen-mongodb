@@ -24,11 +24,10 @@ module.exports = {
                 [queryPath]: id
             }, rootAuthMutation)
             // prepare data
-            if (Array.isArray(data)) {
-                data = data.map(i => (Object.assign(i, {id: createObjectIdString()})))
-            } else {
-                data = [Object.assign({}, data, {id: createObjectIdString()})]
+            if (!Array.isArray(data)) {
+                throw new Error('no-array-given')
             }
+            data = data.map(i => (Object.assign(i, {id: createObjectIdString()})))
 
             const collection = db.collection(CollectionNames.articles)
             const col = isBackground ? 'backgroundFileReferences' : 'fileReferences'
@@ -44,9 +43,42 @@ module.exports = {
                     id: 1, _id: 0
                 }
             })
+            // todo update references to File to indicate the use of files + write a test
             return {updated: !!res.value}
-
-
-        }
+        },
+        /**
+         *
+         * @param parent
+         * @param articleId
+         * @param id
+         * @param materializedPath
+         * @param data
+         * @param isBackground
+         * @param db
+         * @param rootAuthMutation
+         * @return {Promise<void>}
+         */
+        // updateFileReference: async (parent, {where: {articleId, id, materializedPath, fileReferenceId}, data, isBackground}, {db, rootAuthMutation}) => {
+        //     const {queryPath, mutationPath} = getMaterializedMongoModifier(materializedPath)
+        //     const find = Object.assign({
+        //         id: articleId,
+        //         [queryPath]: id
+        //     }, rootAuthMutation)
+        //     const collection = db.collection(CollectionNames.articles)
+        //     const col = isBackground ? 'backgroundFileReferences' : 'fileReferences'
+        //     const pathToMutate = `${mutationPath}.$.${col}`
+        //     const res = await collection.findOneAndUpdate(find, {
+        //         $set: {
+        //             [pathToMutate]: data
+        //         }
+        //     }, {
+        //         projection: {
+        //             id: 1, _id: 0
+        //         }
+        //     })
+        //     // todo update references to File to indicate the use of files + write a test
+        //     return {updated: !!res.value}
+        //
+        // }
     }
 }

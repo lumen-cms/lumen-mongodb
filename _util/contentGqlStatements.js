@@ -27,7 +27,28 @@ mutation ($where:ContentModifyInput!, $data:ContentInput!){
     updateContent(where:$where, data:$data){
         updated
     }
-}
-`
+}`
 
-module.exports = {deleteContentGql, moveContentGql, createContentGql, updateContentGql}
+const createFileReferencesGql = `
+mutation($where:ContentModifyInput!, $data:[FileReferenceInput!]!, $isBackground:Boolean){
+  createFileReferences(where:$where, data:$data, isBackground:$isBackground){
+        updated
+  }
+}`
+
+// const updateFileReferenceGql = `
+// mutation($where:ContentModifyFileReference!, $data:[FileReferenceInput!]!, $isBackground:Boolean){
+//   updateFileReference(where:$where, data:$data, isBackground:$isBackground){
+//         updated
+//   }
+// }`
+
+module.exports = {
+    deleteContentGql,
+    moveContentGql,
+    createContentGql,
+    updateContentGql,
+    createFileReferencesGql
+    // ,
+    // updateFileReferenceGql
+}

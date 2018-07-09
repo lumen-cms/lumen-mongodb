@@ -17,4 +17,5 @@ type Mutation{
     moveContent(where:ContentMoveInput!, isCopy:Boolean, position:Int!):UpdateOnePayload!
     createContent(data:ContentInput!, where:ContentCreateInput!):SimpleUpdatePayload!
     updateContent(data:ContentInput!, where:ContentModifyInput!):SimpleUpdatePayload!
+    createFileReferences(data:[FileReferenceInput!]!, where:ContentModifyInput!, isBackground: Boolean):SimpleUpdatePayload!
 }

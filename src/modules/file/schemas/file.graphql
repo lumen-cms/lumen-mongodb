@@ -1,3 +1,14 @@
+type File{
+    url:String
+    key:String
+    id:String
+    name:String
+    contentType: String
+    size: Int
+    width: Int
+    height: Int
+}
+
 type FilePayload{
     url:String
     key:String
