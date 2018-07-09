@@ -1,7 +1,7 @@
 const {CollectionNames, UserRole} = require('../../../mongo/enum')
 const bcrypt = require('bcryptjs')
 const {signTokenForUser} = require('../../../util/contextHelper')
-const {insertOneMutation} = require('../../../mongo/mutations/insertOneMutation')
+const {insertOneMutation} = require('../../../mongo/mutations/updateOneMutations')
 const {getUserObj} = require('../utils/userHelpers')
 
 module.exports = {

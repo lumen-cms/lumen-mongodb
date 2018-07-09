@@ -1,5 +1,5 @@
 const deleteContentGql = `
-mutation ($where:DeleteContentInput!){
+mutation ($where:ContentModifyInput!){
   deleteContent(where:$where){
    updated
   }
@@ -22,5 +22,12 @@ mutation ($where:ContentCreateInput!, $data:ContentInput!){
   }
 }`
 
+const updateContentGql = `
+mutation ($where:ContentModifyInput!, $data:ContentInput!){
+    updateContent(where:$where, data:$data){
+        updated
+    }
+}
+`
 
-module.exports = {deleteContentGql, moveContentGql, createContentGql}
+module.exports = {deleteContentGql, moveContentGql, createContentGql, updateContentGql}

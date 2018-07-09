@@ -1,30 +1,4 @@
 const {CollectionNames} = require('../../../mongo/enum')
-
-const validation = {
-    $jsonSchema: {
-        bsonType: 'object',
-        required: ['slug', 'title', 'languageKey'],
-        properties: {
-            _id: {
-                bsonType: 'objectId'
-            },
-            id: {
-                bsonType: 'string'
-            },
-            slug: {
-                bsonType: 'string'
-            },
-            title: {
-                bsonType: 'string'
-            },
-            languageKey: {
-                bsonType: 'string'
-            }
-        }
-    }
-}
-
-
 /**
  *
  * @param {Db} db

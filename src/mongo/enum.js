@@ -1,7 +1,8 @@
 module.exports = {
     CollectionNames: {
         users: 'users',
-        articles: 'articles'
+        articles: 'articles',
+        files: 'files'
     },
     UserRole: {
         OPERATOR: 'OPERATOR',

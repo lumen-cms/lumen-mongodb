@@ -4,6 +4,36 @@ const {documentExistsOnce} = require('../../../mongo/mutations/documentExists')
 const _get = require('lodash.get')
 module.exports = {
     Mutation: {
+        /**
+         *
+         * @param parent
+         * @param articleId
+         * @param id
+         * @param materializedPath
+         * @param data
+         * @param {Db} db
+         * @param rootAuthMutation
+         * @return {Promise<{updated: boolean}>}
+         */
+        updateContent: async (parent, {where: {articleId, id, materializedPath}, data}, {db, rootAuthMutation}) => {
+            const {queryPath, mutationPath} = getMaterializedMongoModifier(materializedPath)
+            const find = Object.assign({
+                id: articleId,
+                [queryPath]: id
+            }, rootAuthMutation)
+            // find and update content element
+            const collection = db.collection(CollectionNames.articles)
+            const res = await collection.findOneAndUpdate(find, {
+                $set: {
+                    [mutationPath + '.$']: data
+                }
+            }, {
+                projection: {
+                    id: 1, _id: 0
+                }
+            })
+            return {updated: !!res.value}
+        },
 
         /**
          *

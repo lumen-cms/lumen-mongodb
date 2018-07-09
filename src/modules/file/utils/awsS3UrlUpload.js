@@ -8,7 +8,6 @@ const s3 = new AWS.S3({
 })
 
 
-
 /**
  *
  * @param url
@@ -33,4 +32,19 @@ async function awsUploadUrlToS3 (url) {
     }
 }
 
-module.exports = {awsUploadUrlToS3}
+async function deleteFilesFromS3 (keys) {
+    try {
+        const options = {
+            Bucket: process.env.AWS_BUCKET,
+            Delete: {
+                Objects: keys.map(i => ({Key: i}))
+            }
+        }
+        const data = await s3.deleteObjects(options).promise()
+        return data
+    } catch (e) {
+        throw new Error(e)
+    }
+}
+
+module.exports = {awsUploadUrlToS3, deleteFilesFromS3}

@@ -5,7 +5,7 @@ const {rule, shield, and, or, not} = require('graphql-shield')
 // Rules
 
 const isAuthenticated = rule()(async (parent, args, {user}) => {
-    return user !== null
+    return !!user
 })
 
 const isOperator = rule()(async (parent, args, {permission}) => {
@@ -39,9 +39,16 @@ const isOwnerOfArticle = rule()(async (parent, {where}, {user, db}) => {
     Object.assign(where, find)
     const exists = await documentExists(db.collection(CollectionNames.articles), find)
     return exists
-
 })
 
+const isOwnerOfFile = rule()(async (parent, {where}, {user, db}) => {
+    const find = {
+        createdBy: user.id
+    }
+    Object.assign(where, find)
+    const exists = await documentExists(db.collection(CollectionNames.files), find)
+    return exists
+})
 // Permissions
 
 const permissions = shield({
@@ -49,6 +56,7 @@ const permissions = shield({
         // frontPage: not(isAuthenticated),
         // fruits: and(isAuthenticated, or(isAdmin, isEditor)),
         // customers: and(isAuthenticated, isAdmin)
+        findFiles: isAuthenticated
     },
     Mutation: {
         createArticle: isAuthenticated,
@@ -57,7 +65,11 @@ const permissions = shield({
         deleteArticlesOnIds: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         deleteContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         moveContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
+        updateContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         createContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
+        createFile: isAuthenticated,
+        updateFile: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
+        deleteFile: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
     }
     // Fruit: isAuthenticated,
     // Customer: isAdmin

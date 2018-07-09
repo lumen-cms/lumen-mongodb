@@ -1,0 +1,37 @@
+type FilePayload{
+    url:String
+    key:String
+    id:String
+    name:String
+    contentType: String
+    size: Int
+    width: Int
+    height: Int
+    origin: String
+    usedByContentElements:[String!]
+    usedByArticles:[String!]
+    usedByAuthors:[String!]
+}
+
+
+input FileInput{
+    url:String!
+    key:String!
+    size: Int!
+    contentType: String!
+    name:String
+    width: Int
+    height: Int
+    origin: String
+    usedByContentElements:[String!]
+    usedByArticles:[String!]
+    usedByAuthors:[String!]
+}
+
+input FileMutateInput{
+    id:String!
+}
+input FileFindInput{
+    id:String
+    ids:[String!]
+}

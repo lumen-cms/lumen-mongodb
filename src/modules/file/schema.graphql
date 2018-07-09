@@ -1,0 +1,11 @@
+#import * from './schemas/file.graphql'
+
+type Mutation {
+    updateFile(where:FileMutateInput!,data:FileInput!): UpdateOnePayload!
+    createFile(data:FileInput!): InsertOnePayload!
+    deleteFile(where:FileMutateInput!): DeleteOnePayload!
+}
+
+type Query {
+    findFiles(where:FileFindInput):[FilePayload!]
+}

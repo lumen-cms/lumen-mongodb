@@ -1,3 +1,33 @@
+type FileReference{
+    id: String!
+    file: File!
+    alternative: String
+    caption: String
+    crop:String
+    linkId: String
+    linkOpenExternal: Boolean
+    linkSlug: String
+    linkType: String
+    resize: String
+    title: String
+    backgroundStyles: [String!]
+}
+
+input FileReferenceInput{
+    id: String!
+    file: FileInput!
+    alternative: String
+    caption: String
+    crop:String
+    linkId: String
+    linkOpenExternal: Boolean
+    linkSlug: String
+    linkType: String
+    resize: String
+    title: String
+    backgroundStyles: [String!]
+}
+
 type Content{
     id:String
     materializedPath:String
@@ -7,8 +37,8 @@ type Content{
     teaser:String
     properties:JSON
     styles:JSON
-    #fileReferences:[FileReferences!]
-    #backgroundFileReferences: [FileReferences!]
+    fileReferences:[FileReference!]
+    backgroundFileReferences: [FileReference!]
     children:[Content!]
 }
 
@@ -21,26 +51,20 @@ input ContentInput{
     teaser:String
     properties:JSON
     styles:JSON
-    #fileReferences:[FileReferences!]
-    #backgroundFileReferences: [FileReferences!]
+    fileReferences:[FileReferenceInput!]
+    backgroundFileReferences: [FileReferenceInput!]
     children:[ContentInput!]
 }
 
-input DeleteContentInput{
-    articleId: String!
-    id: String!
-    materializedPath: String!
-}
-
-input ContentMoveItemInput{
+input ContentModifyInput{
     articleId: String!
     id: String!
     materializedPath: String!
 }
 
 input ContentMoveInput{
-    to:ContentMoveItemInput!
-    from:ContentMoveItemInput!
+    to:ContentModifyInput!
+    from:ContentModifyInput!
 }
 
 input ContentCreateInput{

@@ -13,7 +13,8 @@ type Mutation{
     deleteArticle(where:DeleteArticleInput):DeleteOnePayload!
     updateArticle(where:ArticleWhereInput, data:ArticleInput):UpdateOnePayload!
     deleteArticlesOnIds(where:DeleteManyArticleInput):DeleteOnePayload!
-    deleteContent(where:DeleteContentInput!):SimpleUpdatePayload!
+    deleteContent(where:ContentModifyInput!):SimpleUpdatePayload!
     moveContent(where:ContentMoveInput!, isCopy:Boolean, position:Int!):UpdateOnePayload!
     createContent(data:ContentInput!, where:ContentCreateInput!):SimpleUpdatePayload!
+    updateContent(data:ContentInput!, where:ContentModifyInput!):SimpleUpdatePayload!
 }

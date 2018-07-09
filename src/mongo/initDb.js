@@ -1,6 +1,7 @@
-const {MongoClient, ObjectID,} = require('mongodb')
-const initUserCollection = require('../modules/user/db/userCollection.js').initUserCollection
-const initArticleCollection = require('../modules/article/db/articleCollection').initArticleCollection
+const {MongoClient, ObjectID} = require('mongodb')
+const {initUserCollection} = require('../modules/user/db/userCollection.js')
+const {initArticleCollection} = require('../modules/article/db/articleCollection')
+const {initFileCollection} = require('../modules/file/db/fileCollection')
 const DB = {
     user: process.env[process.env.NODE_ENV + '_MONGODB_USER'],
     password: process.env[process.env.NODE_ENV + '_MONGODB_PASSWORD'],
@@ -33,6 +34,7 @@ module.exports = {
             // every collection needs to be initialized (for indexes and validation)
             await initUserCollection(database)
             await initArticleCollection(database)
+            await initFileCollection(database)
 
             return {
                 db: database,

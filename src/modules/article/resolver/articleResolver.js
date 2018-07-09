@@ -1,6 +1,5 @@
 const {addObjectIdsToArray} = require('../../../util/addObjectIdsToArray')
-const {updateOneMutation} = require('../../../mongo/mutations/updateOneMutation')
-const {insertOneMutation} = require('../../../mongo/mutations/insertOneMutation')
+const {insertOneMutation, deleteOneMutation, updateOneMutation} = require('../../../mongo/mutations/updateOneMutations')
 const {CollectionNames} = require('../../../mongo/enum')
 
 module.exports = {
@@ -74,14 +73,7 @@ module.exports = {
          * @return {Promise<void>}
          */
         deleteArticle: async (parent, {where: {id}}, {db, rootAuthMutation}) => {
-            try {
-                const find = Object.assign({id}, rootAuthMutation)
-                const r = await db.collection(CollectionNames.articles).deleteOne(find)
-                return r
-            } catch (e) {
-                console.log(e)
-                throw new Error('delete_article')
-            }
+            return deleteOneMutation(db.collection(CollectionNames.articles), {id}, rootAuthMutation)
         },
         /**
          *
@@ -114,12 +106,7 @@ module.exports = {
          */
         updateArticle: async (parent, {where, data}, {db, rootAuthMutation}) => {
             const collection = db.collection(CollectionNames.articles)
-            try {
-                const r = await updateOneMutation(collection, Object.assign({}, where, rootAuthMutation), data)
-                return r
-            } catch (e) {
-                throw new Error('update_article')
-            }
+            return updateOneMutation(collection, Object.assign({}, where, rootAuthMutation), data)
         }
     }
 }
