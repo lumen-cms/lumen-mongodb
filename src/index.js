@@ -2,19 +2,19 @@ const {resolve} = require('path')
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const {GraphQLServer, PubSub, withFilter} = require('graphql-yoga')
 require('dotenv').config()
-const {startDB} = require('./mongo/initDb')
+const {connectMongoDb} = require('./mongo/initDb')
 const resolvers = require('./graphql/resolvers')
 const {getAuthBaseMutation, getAuthBaseQuery} = require('./util/queryAuthHelper')
 const {permissions} = require('./graphql/permissions')
-const {getProjectId, getUserAndPermission} = require('./util/contextHelper')
+const {getProjectId, getUserRoleOnProjectID} = require('./util/contextHelper')
 
 async function startServer () {
-
     /**
      *
      * @type {{db: Db, ObjectID: ObjectID}|*}
      */
-    const initDb = await startDB({})
+    const database = await connectMongoDb({})
+
     /**
      *
      * @type {PubSub}
@@ -26,14 +26,17 @@ async function startServer () {
      * @param req
      * @returns {{req: *, db: Db, ObjectID: ObjectID, pubSub: PubSub, withFilter: (asyncIteratorFn: ResolverFn, filterFn: FilterFn) => ResolverFn}}
      */
-    const context = (req) => {
+    const context = async (req) => {
+        /**
+         *
+         */
         const projectId = getProjectId(req.request)
-        const {user, permission} = getUserAndPermission(req.request, projectId)
+
+        const {user, permission} = getUserRoleOnProjectID(req.request, projectId)
 
         return {
             req: req.request,
-            db: initDb.db,
-            ObjectID: initDb.ObjectID,
+            db: database,
             pubSub,
             withFilter,
             projectId,

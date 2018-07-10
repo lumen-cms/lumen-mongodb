@@ -1,6 +1,6 @@
 import test from 'ava'
 import {staticToken, graphqlRequest} from '../../../../_util/graphqlRequest'
-import {articleGql, createArticleGql, deleteArticleGql} from '../../../../_util/articlesGqlStatements'
+import {articleGql, createArticleGql, deleteArticleGql} from '../../../../_util/articleGqlStatements'
 import {createFileReferencesGql, updateContentGql} from '../../../../_util/contentGqlStatements'
 
 import fixtureArticle from '../../../../_util/fixture.article'

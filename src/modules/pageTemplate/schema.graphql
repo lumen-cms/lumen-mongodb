@@ -1,0 +1,37 @@
+type PageTemplate{
+    body:String
+    bodyJson:JSON
+    key:String!
+    languageKey:String!
+    title:String!
+    type:String!
+}
+
+input PageTemplateInput{
+    body:String
+    bodyJson:JSON
+    key:String!
+    languageKey:String!
+    title:String!
+    type:String!
+}
+
+input FindPageTemplateInput{
+    id:String
+    ids:[String!]
+}
+
+
+input ModifyPageTemplateInput{
+    id:String
+}
+
+type Query {
+    findPageTemplates(where:FindPageTemplateInput!): [PageTemplate]
+}
+
+type Mutation{
+    createPageTemplate(data:PageTemplateInput!): InsertOnePayload!
+    deletePageTemplate(where:ModifyPageTemplateInput!):DeleteOnePayload!
+    updatePageTemplate(where:ModifyPageTemplateInput!, data:PageTemplateInput!):UpdateOnePayload!
+}

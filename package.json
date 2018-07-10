@@ -11,6 +11,8 @@
     "test:content-update": "TZ=utc NODE_ENV=development ava tests/integration/article/content/update.content.test.js --verbose",
     "test:file-crud": "TZ=utc NODE_ENV=development ava tests/integration/file/file.test.js --verbose",
     "test:content-file-ref": "TZ=utc NODE_ENV=development ava tests/integration/article/content/fileReference.content.test.js --verbose",
+    "test:tag": "TZ=utc NODE_ENV=development ava tests/integration/tag/tag.test.js --verbose",
+    "test:page-template": "TZ=utc NODE_ENV=development ava tests/integration/pageTemplate/pageTemplate.test.js --verbose",
     "test:watch": "TZ=utc NODE_ENV=development ava tests/**/*.js --verbose --watch",
     "dev": "TZ=utc NODE_ENV=development nodemon -e js,json,graphql,gql src/index.js",
     "serve": "TZ=utc NODE_ENV=development node src/index.js",
@@ -48,6 +50,7 @@
     "eslint-plugin-ava": "^4.5.1",
     "eslint-plugin-node": "^6.0.1",
     "graphql-request": "^1.6.0",
+    "graphql-tag": "^2.9.2",
     "nodemon": "^1.17.5"
   },
   "engines": {

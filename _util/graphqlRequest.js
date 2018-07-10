@@ -29,15 +29,7 @@ function getGqlClient (token) {
 }
 
 function graphqlRequest (gql, variables, token) {
-    try {
-        return getGqlClient(token).request(gql, variables)
-            .catch((e) => {
-                console.error(e)
-            })
-    } catch (e) {
-        console.log(e)
-        throw new Error('query gql error')
-    }
+    return getGqlClient(token).request(gql, variables)
 }
 
 module.exports = {

@@ -48,7 +48,7 @@ module.exports = {
      * @param projectId
      * @return {user:AuthUser,permissions.<string>}
      */
-    getUserAndPermission: function (req, projectId) {
+    getUserRoleOnProjectID: function (req, projectId) {
         try {
             const Authorization = req.get('Authorization')
             if (Authorization) {

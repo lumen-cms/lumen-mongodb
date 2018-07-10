@@ -1,0 +1,36 @@
+input FindTagsInput{
+    ids:[String!],
+    id:String
+}
+
+input TagInput{
+    languageKey:String!
+    title:String!
+    type:String!
+    slug:Slug!
+    usedOnArticles:[String!]
+    usedOnFiles:[String!]
+}
+
+type Tag{
+    languageKey:String!
+    title:String!
+    type:String!
+    slug:Slug!
+    usedOnArticles:[String!]
+    usedOnFiles:[String!]
+}
+
+input ModifyTagInput{
+    id:String!
+}
+
+type Query {
+    findTags(where:FindTagsInput): [Tag!]
+}
+
+type Mutation{
+    createTag(data:TagInput!): InsertOnePayload!
+    deleteTag(where:ModifyTagInput!):DeleteOnePayload!
+    updateTag(where:ModifyTagInput!, data:TagInput!):UpdateOnePayload!
+}

@@ -2,7 +2,9 @@ module.exports = {
     CollectionNames: {
         users: 'users',
         articles: 'articles',
-        files: 'files'
+        files: 'files',
+        tags: 'tags',
+        pageTemplates: 'pageTemplates'
     },
     UserRole: {
         OPERATOR: 'OPERATOR',

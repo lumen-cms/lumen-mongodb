@@ -49,6 +49,17 @@ const isOwnerOfFile = rule()(async (parent, {where}, {user, db}) => {
     const exists = await documentExists(db.collection(CollectionNames.files), find)
     return exists
 })
+
+const isOwnerOfTag = rule()(async (parent, {where}, {user, db}) => {
+    const find = {
+        createdBy: user.id
+    }
+    Object.assign(where, find)
+    const exists = await documentExists(db.collection(CollectionNames.tags), find)
+    return exists
+})
+
+
 // Permissions
 
 const permissions = shield({
@@ -56,7 +67,8 @@ const permissions = shield({
         // frontPage: not(isAuthenticated),
         // fruits: and(isAuthenticated, or(isAdmin, isEditor)),
         // customers: and(isAuthenticated, isAdmin)
-        findFiles: isAuthenticated
+        findFiles: isAuthenticated,
+        findTags: isAuthenticated
     },
     Mutation: {
         createArticle: isAuthenticated,
@@ -68,8 +80,15 @@ const permissions = shield({
         updateContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         createContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         createFile: isAuthenticated,
+        createFileReferences: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         updateFile: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
         deleteFile: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
+        createTag: isAuthenticated,
+        updateTag: or(isModerator, isAdmin, and(isOwnerOfTag, isGuest)),
+        deleteTag: or(isModerator, isAdmin, and(isOwnerOfTag, isGuest)),
+        createPageTemplate: or(isModerator, isAdmin),
+        updatePageTemplate: or(isModerator, isAdmin),
+        deletePageTemplate: or(isModerator, isAdmin)
     }
     // Fruit: isAuthenticated,
     // Customer: isAdmin

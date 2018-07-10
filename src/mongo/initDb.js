@@ -1,13 +1,24 @@
-const {MongoClient, ObjectID} = require('mongodb')
+const {MongoClient} = require('mongodb')
 const {initUserCollection} = require('../modules/user/db/userCollection.js')
 const {initArticleCollection} = require('../modules/article/db/articleCollection')
 const {initFileCollection} = require('../modules/file/db/fileCollection')
+const {initTagCollection} = require('../modules/tag/tagCollection')
 const DB = {
     user: process.env[process.env.NODE_ENV + '_MONGODB_USER'],
     password: process.env[process.env.NODE_ENV + '_MONGODB_PASSWORD'],
     db: process.env[process.env.NODE_ENV + '_MONGODB_DB'],
     url: process.env[process.env.NODE_ENV + '_MONGODB_URL']
 }
+
+/**
+ *
+ * @param database
+ * @return {*}
+ */
+function cleanup (database) {
+    return database.close(true)
+}
+
 module.exports = {
     /**
      *
@@ -15,16 +26,15 @@ module.exports = {
      * @param password
      * @param url
      * @param db
-     * @returns {Promise<{db: Db, ObjectID: ObjectID}>}
+     * @return {Promise<Db>}
      */
-    startDB: async ({user = DB.user, password = DB.password, url = DB.url, db = DB.db}) => {
+    connectMongoDb: async ({user = DB.user, password = DB.password, url = DB.url, db = DB.db}) => {
         try {
             /**
              *
              * @type {MongoClient}
              */
-            const client = await MongoClient.connect(`mongodb://${user}:${password}@${url}/${db}`)
-
+            const client = await MongoClient.connect(`mongodb://${user}:${password}@${url}/${db}`, {useNewUrlParser: true})
             /**
              *
              * @type {Db}
@@ -35,14 +45,13 @@ module.exports = {
             await initUserCollection(database)
             await initArticleCollection(database)
             await initFileCollection(database)
-
-            return {
-                db: database,
-                ObjectID
-            }
-
+            await initTagCollection(database)
+            // process.on('SIGINT', cleanup(client))
+            // process.on('SIGTERM', cleanup(client))
+            return database
         } catch (e) {
             console.log(e)
+            throw new Error(e)
         }
     }
 }

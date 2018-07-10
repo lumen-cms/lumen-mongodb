@@ -1,4 +1,5 @@
 // create a new post
+const ObjectID = require('mongodb').ObjectID
 const {CollectionNames} = require('../../../mongo/enum')
 const {getUserObj} = require('../utils/userHelpers')
 const {withFilter} = require('graphql-yoga')
@@ -69,7 +70,7 @@ module.exports = {
          * @param {PubSub} pubSub
          * @returns {Promise<void>}
          */
-        updateUser: async (parent, {_id, email, firstName, lastName}, {db, ObjectID, pubSub}) => {
+        updateUser: async (parent, {_id, email, firstName, lastName}, {db, pubSub}) => {
             const form = getUserObj({email, firstName, lastName})
             try {
                 delete form._id // need to remove the _id modifier

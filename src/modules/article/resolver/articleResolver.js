@@ -53,7 +53,6 @@ module.exports = {
          * @param ctx
          * @param {Db} db
          * @param {Request} req
-         * @param {ObjectID} ObjectID
          * @returns {Promise<void>}
          */
         createArticle: async (parent, {data}, {db, projectId, user}) => {

@@ -19,9 +19,9 @@ type FilePayload{
     width: Int
     height: Int
     origin: String
-    usedByContentElements:[String!]
-    usedByArticles:[String!]
-    usedByAuthors:[String!]
+    usedOnContentElements:[String!]
+    usedOnArticles:[String!]
+    usedOnAuthors:[String!]
 }
 
 

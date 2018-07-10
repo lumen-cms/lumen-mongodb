@@ -4,6 +4,8 @@ scalar GraphQLDateTime
 scalar Slug
 scalar SlugPath
 scalar JSON
+#import Query.*, Mutation.* from '../modules/pageTemplate/schema.graphql'
+#import Query.*, Mutation.* from '../modules/tag/schema.graphql'
 #import Query.*, Mutation.* from '../modules/file/schema.graphql'
 #import Query.*, Subscription.*, Mutation.* from '../modules/user/schema.graphql'
 #import Query.*, Mutation.* from '../modules/article/schema.graphql'
