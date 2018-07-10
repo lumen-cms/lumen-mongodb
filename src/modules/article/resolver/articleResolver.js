@@ -61,7 +61,7 @@ module.exports = {
                 data.contentElements = addObjectIdsToArray(data.contentElements, 'children')
             }
 
-            return insertOneMutation(db.collection(CollectionNames.articles), data, {projectId, user})
+            return insertOneMutation(db, CollectionNames.articles, data, {projectId, user})
         },
         /**
          *
@@ -72,7 +72,7 @@ module.exports = {
          * @return {Promise<void>}
          */
         deleteArticle: async (parent, {where: {id}}, {db, rootAuthMutation}) => {
-            return deleteOneMutation(db.collection(CollectionNames.articles), {id}, rootAuthMutation)
+            return deleteOneMutation(db, CollectionNames.articles, {id}, rootAuthMutation)
         },
         /**
          *
@@ -104,8 +104,7 @@ module.exports = {
          * @return {Promise<{insertedId: string, acknowledged: boolean}|*>}
          */
         updateArticle: async (parent, {where, data}, {db, rootAuthMutation}) => {
-            const collection = db.collection(CollectionNames.articles)
-            return updateOneMutation(collection, Object.assign({}, where, rootAuthMutation), data)
+            return updateOneMutation(db, CollectionNames.articles, Object.assign({}, where, rootAuthMutation), data)
         }
     }
 }

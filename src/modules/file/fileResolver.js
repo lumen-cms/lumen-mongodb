@@ -1,5 +1,5 @@
-const {insertOneMutation, deleteOneMutation, updateOneMutation} = require('../../../mongo/mutations/updateOneMutations')
-const {CollectionNames} = require('../../../mongo/enum')
+const {insertOneMutation, deleteOneMutation, updateOneMutation} = require('../../mongo/mutations/updateOneMutations')
+const {CollectionNames} = require('../../mongo/enum')
 module.exports = {
     Query: {
         /**
@@ -35,7 +35,7 @@ module.exports = {
          * @return {Promise<Promise<{insertedId: string, acknowledged: boolean}>|*>}
          */
         createFile: async (parent, {data}, {db, projectId, user}) => {
-            return insertOneMutation(db.collection(CollectionNames.files), data, {projectId, user})
+            return insertOneMutation(db, CollectionNames.files, data, {projectId, user})
         },
         /**
          *
@@ -50,7 +50,7 @@ module.exports = {
             // todo 1: prevent delete if used in other collections
             // todo 2: remove file from s3 storage
 
-            return deleteOneMutation(db.collection(CollectionNames.files), {id}, rootAuthMutation)
+            return deleteOneMutation(db, CollectionNames.files, {id}, rootAuthMutation)
         },
         /**
          *
@@ -62,8 +62,7 @@ module.exports = {
          * @return {Promise<Promise<{insertedId: string, acknowledged: boolean}>|*>}
          */
         updateFile: async (parent, {where: {id}, data}, {db, rootAuthMutation}) => {
-            const collection = db.collection(CollectionNames.files)
-            return updateOneMutation(collection, Object.assign({}, {id}, rootAuthMutation), data)
+            return updateOneMutation(db, CollectionNames.files, Object.assign({}, {id}, rootAuthMutation), data)
         }
     }
 }

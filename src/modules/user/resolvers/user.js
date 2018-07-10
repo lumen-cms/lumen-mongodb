@@ -1,5 +1,5 @@
 // create a new post
-const ObjectID = require('mongodb').ObjectID
+const {ObjectID} = require('mongodb')
 const {CollectionNames} = require('../../../mongo/enum')
 const {getUserObj} = require('../utils/userHelpers')
 const {withFilter} = require('graphql-yoga')

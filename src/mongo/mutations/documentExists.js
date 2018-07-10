@@ -30,11 +30,10 @@ async function documentExistsOnce (collection, find) {
  */
 async function documentCount (collection, find) {
     Object.keys(find).forEach(key => !find[key] && delete find[key]) // remove unneeded find
-    const count = await collection
+    return await collection
         .find(find)
         .project({_id: 1})
         .count()
-    return count
 }
 
 

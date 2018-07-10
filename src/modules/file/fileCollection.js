@@ -1,4 +1,4 @@
-const {CollectionNames} = require('../../../mongo/enum')
+const {CollectionNames} = require('../../mongo/enum')
 /**
  *
  * @param {Db} db

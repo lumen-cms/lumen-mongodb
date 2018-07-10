@@ -5,7 +5,7 @@ const content = require('../modules/article/resolver/contentResolver')
 const fileReference = require('../modules/article/resolver/fileReferenceResolver')
 const pageTemplate = require('../modules/pageTemplate/pageTemplateResolver')
 const tag = require('../modules/tag/tagResolver')
-const files = require('../modules/file/resolver/fileResolver')
+const files = require('../modules/file/fileResolver')
 const {Slug, SlugPath} = require('./custom/slugScalarType')
 const JSON = require('graphql-type-json')
 

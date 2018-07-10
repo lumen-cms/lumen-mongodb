@@ -36,7 +36,7 @@ module.exports = {
          * @return {Promise<Promise<{insertedId: string, acknowledged: boolean}>|*>}
          */
         createPageTemplate: async (parent, {data}, {db, projectId, user}) => {
-            return insertOneMutation(db.collection(CollectionNames.pageTemplates), data, {projectId, user})
+            return insertOneMutation(db, CollectionNames.pageTemplates, data, {projectId, user})
         },
         /**
          *
@@ -49,7 +49,7 @@ module.exports = {
          */
         deletePageTemplate: async (parent, {where: {id}}, {db, rootAuthMutation}) => {
             // todo prevent if used somewhere?
-            return deleteOneMutation(db.collection(CollectionNames.pageTemplates), {id}, rootAuthMutation)
+            return deleteOneMutation(db, CollectionNames.pageTemplates, {id}, rootAuthMutation)
         },
         /**
          *
@@ -61,9 +61,8 @@ module.exports = {
          * @return {Promise<Promise<{insertedId: string, acknowledged: boolean}>|*>}
          */
         updatePageTemplate: async (parent, {where: {id}, data}, {db, rootAuthMutation}) => {
-            const collection = db.collection(CollectionNames.pageTemplates)
             // todo update in all connected collections
-            return updateOneMutation(collection, Object.assign({}, {id}, rootAuthMutation), data)
+            return updateOneMutation(db, CollectionNames.pageTemplates, Object.assign({}, {id}, rootAuthMutation), data)
         }
     }
 }

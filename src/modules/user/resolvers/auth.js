@@ -1,5 +1,6 @@
 const {CollectionNames, UserRole} = require('../../../mongo/enum')
 const bcrypt = require('bcryptjs')
+const {documentExists} = require('../../../mongo/mutations/documentExists')
 const {signTokenForUser} = require('../../../util/contextHelper')
 const {insertOneMutation} = require('../../../mongo/mutations/updateOneMutations')
 const {getUserObj} = require('../utils/userHelpers')
@@ -35,7 +36,7 @@ module.exports = {
          */
         signup: async (parent, {data: {email, firstName, lastName, password}}, {db, projectId}) => {
             const collection = db.collection(CollectionNames.users)
-            const existingUser = await collection.findOne({username: email})
+            const existingUser = await documentExists(collection, {username: email})
             if (existingUser) {
                 throw new Error('signup_user_exist')
             }
@@ -55,7 +56,7 @@ module.exports = {
             })
             // save the post
             try {
-                const {insertedId} = await insertOneMutation(collection, form)
+                const {insertedId} = await insertOneMutation(db, CollectionNames.users, form)
                 const userPayload = {
                     id: insertedId,
                     email,
@@ -83,6 +84,7 @@ module.exports = {
          * @returns {Promise<{token: *, user: *}>}
          */
         login: async (parent, {data: {email, password}}, {db}) => {
+            // fetch user for his credentials
             const user = await db.collection(CollectionNames.users).findOne({
                 username: email
             })
@@ -91,7 +93,7 @@ module.exports = {
             }
             try {
                 const emailPassword = user.services.find(i => !!i.password)
-                if(!emailPassword){
+                if (!emailPassword) {
                     throw new Error('login_password_not_found')
                 }
                 const valid = await bcrypt.compare(

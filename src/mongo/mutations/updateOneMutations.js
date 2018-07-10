@@ -2,12 +2,13 @@ const ObjectID = require('mongodb').ObjectID
 
 /**
  *
- * @param {Collection} collection
+ * @param {Db} db
+ * @param {string} collectionName
  * @param data
  * @param [context]
  * @returns {Promise<{insertedId:string,acknowledged:boolean}>}
  */
-async function insertOneMutation (collection, data, context) {
+async function insertOneMutation (db, collectionName, data, context) {
     data.createdAt = new Date(new Date().toISOString())
     const objectID = new ObjectID()
     data._id = objectID
@@ -17,51 +18,53 @@ async function insertOneMutation (collection, data, context) {
         context.projectId && (data.projectId = context.projectId)
     }
     try {
-        const r = await collection.insertOne(data)
+        const r = await db.collection(collectionName).insertOne(data)
         return r
     } catch (e) {
         if (e.message.includes('E11000 duplicate')) {
-            throw new Error('insert_error_unique')
+            return Promise.reject('insert_error_unique')
         }
-        throw new Error(e.message)
+        return Promise.reject(e.message)
     }
 }
 
 /**
  *
- * @param collection
+ * @param {Db} db
+ * @param {string} collectionName
  * @param find
  * @param rootAuthMutation
  * @return {Promise<Promise|OrderedBulkOperation|void>}
  */
-async function deleteOneMutation (collection, find, rootAuthMutation) {
+async function deleteOneMutation (db, collectionName, find, rootAuthMutation) {
     try {
-        return collection.deleteOne(Object.assign({}, find, rootAuthMutation))
+        return db.collection(collectionName).deleteOne(Object.assign({}, find, rootAuthMutation))
     } catch (e) {
-        throw new Error(e.message)
+        return Promise.reject(e)
     }
 }
 
 /**
  *
- * @param {Collection} collection
+ * @param {Db} db
+ * @param {string} collectionName
  * @param {object} find
  * @param {object} data
  * @returns {Promise<{insertedId:string,acknowledged:boolean}>}
  */
-async function updateOneMutation (collection, find, data) {
+async function updateOneMutation (db, collectionName, find, data) {
     data.updatedAt = new Date(new Date().toISOString())
     delete data.id
     delete data._id
     Object.keys(find).forEach(key => !find[key] && delete find[key]) // remove unneeded find
     try {
-        const r = await collection.updateOne(find, {$set: data})
+        const r = await db.collection(collectionName).updateOne(find, {$set: data})
         return r
     } catch (e) {
         if (e.message.includes('E11000 duplicate')) {
-            throw new Error('insert_error_unique')
+            return Promise.reject('insert_error_unique')
         }
-        throw new Error(e.message)
+        return Promise.reject(e.message)
     }
 }
 

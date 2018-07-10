@@ -44,7 +44,7 @@ module.exports = {
          * @return {Promise<Promise<{insertedId: string, acknowledged: boolean}>|*>}
          */
         createTag: async (parent, {data}, {db, projectId, user}) => {
-            return insertOneMutation(db.collection(CollectionNames.tags), data, {projectId, user})
+            return insertOneMutation(db, CollectionNames.tags, data, {projectId, user})
         },
         /**
          *
@@ -57,7 +57,7 @@ module.exports = {
          */
         deleteTag: async (parent, {where: {id}}, {db, rootAuthMutation}) => {
             // todo prevent if used somewhere?
-            return deleteOneMutation(db.collection(CollectionNames.tags), {id}, rootAuthMutation)
+            return deleteOneMutation(db, CollectionNames.tags, {id}, rootAuthMutation)
         },
         /**
          *
@@ -69,9 +69,8 @@ module.exports = {
          * @return {Promise<Promise<{insertedId: string, acknowledged: boolean}>|*>}
          */
         updateTag: async (parent, {where: {id}, data}, {db, rootAuthMutation}) => {
-            const collection = db.collection(CollectionNames.tags)
             // todo update in all connected collections
-            return updateOneMutation(collection, Object.assign({}, {id}, rootAuthMutation), data)
+            return updateOneMutation(db, CollectionNames.tags, Object.assign({}, {id}, rootAuthMutation), data)
         }
     }
 }
