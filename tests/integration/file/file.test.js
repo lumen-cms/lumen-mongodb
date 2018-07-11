@@ -1,8 +1,8 @@
 import test from 'ava'
 
-import {staticToken, graphqlRequest} from '../../../_util/graphqlRequest'
-import {createFileGql, deleteFileGql, findFilesGql, updateFileGql} from '../../../_util/fileGqlStatements'
-import {getHead} from '../../../_util/getHeadOfExternalUrl'
+import {staticToken, graphqlRequest} from '../../util/graphqlRequest'
+import {createFileGql, deleteFileGql, findFilesGql, updateFileGql} from '../../util/fileGqlStatements'
+import {getHead} from '../../util/getHeadOfExternalUrl'
 
 const externalImg = 'https://imgprxy.planet.training/v1/cj7r5j1a30jsl0132374v5q2z/cjakqo3tc00gl01376u0mbx15'
 

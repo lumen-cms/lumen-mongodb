@@ -31,12 +31,15 @@ const deleteTagGql = gql`
 const findTagsGql = gql`
     query($where:FindTagsInput){
         findTags(where:$where){
+            id
             languageKey
             slug
             title
             type
-            usedOnArticles
-            usedOnFiles
+            _meta{
+                articles
+                files
+            }
         }
     }`
 

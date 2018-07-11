@@ -1,11 +1,11 @@
 import test from 'ava'
-import {staticToken, graphqlRequest} from '../../../_util/graphqlRequest'
+import {staticToken, graphqlRequest} from '../../util/graphqlRequest'
 import {
     createPageTemplateGql,
     deletePageTemplateGql,
     findPageTemplatesGql,
     updatePageTemplateGql
-} from '../../../_util/pageTemplateGqlStatements'
+} from '../../util/pageTemplateGqlStatements'
 
 
 const testData = {

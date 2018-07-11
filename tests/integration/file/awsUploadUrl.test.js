@@ -1,6 +1,6 @@
 import test from 'ava'
 import {awsUploadUrlToS3, deleteFilesFromS3} from '../../../src/modules/file/utils/awsS3UrlUpload'
-import {getHead} from '../../../_util/getHeadOfExternalUrl'
+import {getHead} from '../../util/getHeadOfExternalUrl'
 
 require('dotenv').config()
 

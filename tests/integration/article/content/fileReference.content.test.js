@@ -1,9 +1,9 @@
 import test from 'ava'
-import {staticToken, graphqlRequest} from '../../../../_util/graphqlRequest'
-import {articleGql, createArticleGql, deleteArticleGql} from '../../../../_util/articleGqlStatements'
-import {createFileReferencesGql, updateContentGql} from '../../../../_util/contentGqlStatements'
+import {staticToken, graphqlRequest} from '../../../util/graphqlRequest'
+import {articleGql, createArticleGql, deleteArticleGql} from '../../../util/articleGqlStatements'
+import {createFileReferencesGql, updateContentGql} from '../../../util/contentGqlStatements'
 
-import fixtureArticle from '../../../../_util/fixture.article'
+import fixtureArticle from '../../../util/fixture.article'
 
 
 const testFile = {

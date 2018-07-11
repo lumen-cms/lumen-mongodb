@@ -1,6 +1,6 @@
 import test from 'ava'
-import {staticToken, graphqlRequest} from '../../../_util/graphqlRequest'
-import {createTagGql, deleteTagGql, findTagsGql, updateTagGql} from '../../../_util/tagGqlStatements'
+import {staticToken, graphqlRequest} from '../../util/graphqlRequest'
+import {createTagGql, deleteTagGql, findTagsGql, updateTagGql} from '../../util/tagGqlStatements'
 
 const testData = {
     languageKey: 'de',

@@ -1,8 +1,8 @@
 import test from 'ava'
-import {staticToken, graphqlRequest} from '../../../../_util/graphqlRequest'
-import {articleGql, createArticleGql, deleteArticleGql} from '../../../../_util/articleGqlStatements'
-import {updateContentGql} from '../../../../_util/contentGqlStatements'
-import fixtureArticle from '../../../../_util/fixture.article'
+import {staticToken, graphqlRequest} from '../../../util/graphqlRequest'
+import {articleGql, createArticleGql, deleteArticleGql} from '../../../util/articleGqlStatements'
+import {updateContentGql} from '../../../util/contentGqlStatements'
+import fixtureArticle from '../../../util/fixture.article'
 
 test.serial('update content of an article', async t => {
     fixtureArticle.slug += new Date().toISOString().toLowerCase()

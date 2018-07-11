@@ -71,5 +71,18 @@
         "module.exports"
       ]
     }
+  },
+  "ava": {
+    "files": [
+      "!util",
+      "tests/**/*.test.js"
+    ]
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "tests/*",
+      "graphql.config.json"
+    ],
+    "delay": "2500"
   }
 }

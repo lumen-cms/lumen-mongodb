@@ -1,4 +1,4 @@
-const {UserRole} = require('../src/mongo/enum')
+const {UserRole} = require('../../src/mongo/enum')
 const {GraphQLClient} = require('graphql-request')
 
 const staticToken = {

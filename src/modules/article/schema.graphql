@@ -11,7 +11,7 @@ type Query {
 type Mutation{
     createArticle(data:ArticleInput): InsertOnePayload!
     deleteArticle(where:DeleteArticleInput):DeleteOnePayload!
-    updateArticle(where:ArticleWhereInput, data:ArticleInput):UpdateOnePayload!
+    updateArticle(where:ArticleWhereInput, data:ArticleInputUpdate):UpdateOnePayload!
     deleteArticlesOnIds(where:DeleteManyArticleInput):DeleteOnePayload!
     deleteContent(where:ContentModifyInput!):SimpleUpdatePayload!
     moveContent(where:ContentMoveInput!, isCopy:Boolean, position:Int!):UpdateOnePayload!

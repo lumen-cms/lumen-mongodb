@@ -38,7 +38,11 @@ async function insertOneMutation (db, collectionName, data, context) {
  */
 async function deleteOneMutation (db, collectionName, find, rootAuthMutation) {
     try {
-        return db.collection(collectionName).deleteOne(Object.assign({}, find, rootAuthMutation))
+
+        const main = await db.collection(collectionName).deleteOne(Object.assign({}, find, rootAuthMutation))
+        // update related collections
+        // if(main.deleted = 1)
+        return main
     } catch (e) {
         return Promise.reject(e)
     }

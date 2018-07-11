@@ -4,14 +4,7 @@ type Author {
     file:File
 }
 
-type Category{
-    id: String
-    title: String
-    slug: String
-    languageKey: String
-    createdAt: Date
-    updatedAt: Date
-}
+
 
 type Article{
     _id: String
@@ -33,7 +26,7 @@ type Article{
     updatedAt: GraphQLDateTime
     contentElements:[Content!]
     authors: [Author!]
-    categories:[Category!]
+    tags:[TagTypeForeignField!]
     gallery:[File!]
     previewImage:File
 }
@@ -51,7 +44,23 @@ input ArticleInput{
     publishedDate: Date
     isBlogEntry: Boolean
     authorsIds:[String]
-    categoriesIds:[String]
+    tags:[TagInputForeignField]
+    contentElements:[ContentInput!]
+}
+input ArticleInputUpdate{
+    title: String
+    slug: SlugPath
+    languageKey: String
+    description: String
+    deleted: Boolean
+    metaTitle: String
+    teaser: String
+    keywords: String
+    published: Boolean
+    publishedDate: Date
+    isBlogEntry: Boolean
+    authorsIds:[String]
+    tags:[TagInputForeignField]
     contentElements:[ContentInput!]
 }
 

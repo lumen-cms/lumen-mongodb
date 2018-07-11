@@ -1,8 +1,8 @@
 import test from 'ava'
-import {staticToken, graphqlRequest} from '../../../../_util/graphqlRequest'
-import {articleGql, createArticleGql, deleteArticleGql} from '../../../../_util/articleGqlStatements'
-import {deleteContentGql} from '../../../../_util/contentGqlStatements'
-import fixtureArticle from '../../../../_util/fixture.article'
+import {staticToken, graphqlRequest} from '../../../util/graphqlRequest'
+import {articleGql, createArticleGql, deleteArticleGql} from '../../../util/articleGqlStatements'
+import {deleteContentGql} from '../../../util/contentGqlStatements'
+import fixtureArticle from '../../../util/fixture.article'
 
 
 test.serial('delete one content element which does not exist', async t => {
@@ -23,7 +23,6 @@ test.serial('delete one content element which does not exist', async t => {
     // query article again
     const updatedArticle = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
         .then(r => r.article)
-
     const {deleteArticle} = await graphqlRequest(deleteArticleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
     t.is(deleteContent.updated, false)
     t.is(!!createArticle, true)

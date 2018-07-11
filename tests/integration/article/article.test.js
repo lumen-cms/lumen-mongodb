@@ -1,6 +1,6 @@
 import test from 'ava'
-import {staticToken, graphqlRequest} from '../../../_util/graphqlRequest'
-import {createArticleGql, deleteArticleGql, deleteManyArticlesGql, updateArticleGql,articleGql,findArticlesGql} from '../../../_util/articleGqlStatements'
+import {staticToken, graphqlRequest} from '../../util/graphqlRequest'
+import {createArticleGql, deleteArticleGql, deleteManyArticlesGql, updateArticleGql,articleGql,findArticlesGql} from '../../util/articleGqlStatements'
 
 const currentUserId = '5b387f6652a5b71ec2ffe921'
 

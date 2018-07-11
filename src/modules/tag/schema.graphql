@@ -1,3 +1,15 @@
+input TagInputForeignField{
+    id:String!
+    title:String!
+    slug:String!
+}
+
+type TagTypeForeignField{
+    id: String
+    title: String
+    slug: String
+}
+
 input FindTagsInput{
     ids:[String!],
     id:String
@@ -8,17 +20,20 @@ input TagInput{
     title:String!
     type:String!
     slug:Slug!
-    usedOnArticles:[String!]
-    usedOnFiles:[String!]
+}
+
+type TagMeta{
+    articles:[String!]
+    files:[String!]
 }
 
 type Tag{
+    id:String!
     languageKey:String!
     title:String!
     type:String!
     slug:Slug!
-    usedOnArticles:[String!]
-    usedOnFiles:[String!]
+    _meta: TagMeta
 }
 
 input ModifyTagInput{

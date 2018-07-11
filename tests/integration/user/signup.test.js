@@ -1,5 +1,5 @@
 import test from 'ava'
-import {graphqlRequest} from '../../../_util/graphqlRequest'
+import {graphqlRequest} from '../../util/graphqlRequest'
 
 const signupGql = `
 mutation signup($data:SignupInput) {
