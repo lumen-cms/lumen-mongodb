@@ -1,9 +1,29 @@
 const {CollectionNames} = require('./enum')
+
+/**
+ * @typedef {Object} MongoRelationConfig
+ * @property {string} type
+ * @property {string} field
+ * @property {string} foreignField
+ * @property {array} [data]
+ */
+
+/**
+ *
+ * @type {{manyToFew: string, fewToMany: string}}
+ */
+const RelationTypes = {
+    manyToFew: 'manyToFew',
+    fewToMany: 'fewToMany'
+}
+
 const Relations = {
     [CollectionNames.tags]: {
         [CollectionNames.articles]: {
-            field: 'tags',
-            foreignFields: 'id,slug,title'
+            type: RelationTypes.manyToFew,
+            field: '_meta.' + CollectionNames.articles,
+            foreignField: CollectionNames.tags,
+            data: ['id', 'title', 'slug'] // need to keep this in sync with gql insert/update
         },
         [CollectionNames.files]: {
             field: 'tags',
@@ -12,16 +32,18 @@ const Relations = {
     },
     [CollectionNames.articles]: {
         [CollectionNames.tags]: {
-            field: '_meta.' + CollectionNames.articles,
-            foreignFields: 'id'
+            type: RelationTypes.fewToMany,
+            field: CollectionNames.tags,
+            foreignField: '_meta.' + CollectionNames.articles
         }
+        // todo files/media
     },
     [CollectionNames.files]: {
         [CollectionNames.tags]: {
             field: '_meta.' + CollectionNames.files,
-            foreignFields: 'id'
+            foreignField: 'id'
         }
     }
 }
 
-module.exports = {Relations}
+module.exports = {Relations, RelationTypes}

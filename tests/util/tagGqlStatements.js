@@ -11,7 +11,7 @@ const createTagGql = gql`
 
 
 const updateTagGql = gql`
-    mutation ($data:TagInput!, $where:ModifyTagInput!){
+    mutation ($data:TagUpdateInput!, $where:ModifyTagInput!){
         updateTag(data:$data,where:$where){
             acknowledged
             matchedCount

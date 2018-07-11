@@ -1,4 +1,7 @@
-const ObjectID = require('mongodb').ObjectID
+const {ObjectID} = require('mongodb')
+const {updateRelatedFields} = require('./relations/updateRelatedFields')
+const {createRelatedFields} = require('./relations/createRelatedFields')
+const {removeRelatedFields} = require('./relations/removeRelatedFields')
 
 /**
  *
@@ -18,11 +21,17 @@ async function insertOneMutation (db, collectionName, data, context) {
         context.projectId && (data.projectId = context.projectId)
     }
     try {
-        const r = await db.collection(collectionName).insertOne(data)
-        return r
+        const insert = await db.collection(collectionName).insertOne(data)
+
+        // update related fields
+        if (insert.insertedId) {
+            await createRelatedFields(db, collectionName, insert.insertedId)
+        }
+
+        return insert
     } catch (e) {
         if (e.message.includes('E11000 duplicate')) {
-            return Promise.reject('insert_error_unique')
+            return Promise.reject(`insert_error_unique of collection "${collectionName}"`)
         }
         return Promise.reject(e.message)
     }
@@ -38,10 +47,11 @@ async function insertOneMutation (db, collectionName, data, context) {
  */
 async function deleteOneMutation (db, collectionName, find, rootAuthMutation) {
     try {
-
         const main = await db.collection(collectionName).deleteOne(Object.assign({}, find, rootAuthMutation))
         // update related collections
-        // if(main.deleted = 1)
+        if (main.deletedCount === 1) {
+            await removeRelatedFields(db, collectionName, find.id)
+        }
         return main
     } catch (e) {
         return Promise.reject(e)
@@ -63,6 +73,9 @@ async function updateOneMutation (db, collectionName, find, data) {
     Object.keys(find).forEach(key => !find[key] && delete find[key]) // remove unneeded find
     try {
         const r = await db.collection(collectionName).updateOne(find, {$set: data})
+        if (r.modifiedCount === 1) {
+            await updateRelatedFields(db, collectionName, find.id, data)
+        }
         return r
     } catch (e) {
         if (e.message.includes('E11000 duplicate')) {
