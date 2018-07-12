@@ -3,7 +3,7 @@ const gql = require('graphql-tag')
 
 const createTagGql = gql`
     mutation ($data:TagInput!){
-        createTag(data:$data){
+        tagsCreateOne(data:$data){
             insertedId
             acknowledged
         }
@@ -12,7 +12,7 @@ const createTagGql = gql`
 
 const updateTagGql = gql`
     mutation ($data:TagUpdateInput!, $where:ModifyTagInput!){
-        updateTag(data:$data,where:$where){
+        tagsUpdateOne(data:$data,where:$where){
             acknowledged
             matchedCount
             modifiedCount
@@ -22,7 +22,7 @@ const updateTagGql = gql`
 
 const deleteTagGql = gql`
     mutation ($where:ModifyTagInput!){
-        deleteTag(where:$where){
+        tagsDeleteOne(where:$where){
             acknowledged
             deletedCount
         }
@@ -30,7 +30,7 @@ const deleteTagGql = gql`
 
 const findTagsGql = gql`
     query($where:FindTagsInput){
-        findTags(where:$where){
+        tags(where:$where){
             id
             languageKey
             slug

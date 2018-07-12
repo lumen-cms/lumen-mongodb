@@ -10,9 +10,16 @@ type TagTypeForeignField{
     slug: String
 }
 
-input FindTagsInput{
-    ids:[String!],
-    id:String
+
+
+input FindTagsInput {
+    id:RootStringFilter
+    title:RootStringFilter
+    type:RootStringFilter
+    slug:RootStringFilter
+    AND:[FindTagsInput]
+    OR:[FindTagsInput]
+    NOR:[FindTagsInput]
 }
 
 input TagInput{
@@ -43,16 +50,33 @@ type Tag{
     _meta: TagMeta
 }
 
+type TagType{
+    id:String!
+    languageKey:String!
+    title:String!
+    type:String!
+    slug:Slug!
+    _meta: TagMeta
+}
+
 input ModifyTagInput{
     id:String!
 }
 
+type TagSearch{
+    id:String
+    title:String
+    languageKey:String
+    slug:String
+    type:String
+}
+
 type Query {
-    findTags(where:FindTagsInput): [Tag!]
+    tags(where:FindTagsInput): [Tag] @MongoFind
 }
 
 type Mutation{
-    createTag(data:TagInput!): InsertOnePayload!
-    deleteTag(where:ModifyTagInput!):DeleteOnePayload!
-    updateTag(where:ModifyTagInput!, data:TagUpdateInput!):UpdateOnePayload!
+    tagsCreateOne(data:TagInput!): InsertOnePayload! @MongoCreateOne
+    tagsDeleteOne(where:ModifyTagInput!):DeleteOnePayload! @MongoDeleteOne
+    tagsUpdateOne(where:ModifyTagInput!, data:TagUpdateInput!):UpdateOnePayload! @MongoUpdateOne
 }

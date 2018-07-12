@@ -41,7 +41,7 @@ input ArticleInput{
     teaser: String
     keywords: String
     published: Boolean
-    publishedDate: Date
+    publishedDate: GraphQLDateTime
     isBlogEntry: Boolean
     authorsIds:[String]
     tags:[TagInputForeignField]
@@ -57,7 +57,7 @@ input ArticleInputUpdate{
     teaser: String
     keywords: String
     published: Boolean
-    publishedDate: Date
+    publishedDate: GraphQLDateTime
     isBlogEntry: Boolean
     authorsIds:[String]
     tags:[TagInputForeignField]

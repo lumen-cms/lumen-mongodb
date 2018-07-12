@@ -7,6 +7,7 @@ const resolvers = require('./graphql/resolvers')
 const {getAuthBaseMutation, getAuthBaseQuery} = require('./util/queryAuthHelper')
 const {permissions} = require('./graphql/permissions')
 const {getProjectId, getUserRoleOnProjectID} = require('./util/contextHelper')
+const {MongoWhereDirective, MongoFindDirective, MongoCreateOneDirective, MongoUpdateOneDirective, MongoDeleteOneDirective} = require('./graphql/directives/MongoGenericDirectives')
 
 async function startServer () {
     /**
@@ -55,7 +56,17 @@ async function startServer () {
         typeDefs: resolve(__dirname, './graphql/schema.graphql'),
         resolvers,
         context,
-        middlewares: [permissions]
+        middlewares: [permissions],
+        schemaDirectives: {
+            MongoWhere: MongoWhereDirective,
+            MongoFind: MongoFindDirective,
+            MongoCreateOne: MongoCreateOneDirective,
+            MongoUpdateOne: MongoUpdateOneDirective,
+            MongoDeleteOne: MongoDeleteOneDirective
+        }
+        // resolverValidationOptions: {
+        //     allowResolversNotInSchema: true
+        // }
     })
 
     // options

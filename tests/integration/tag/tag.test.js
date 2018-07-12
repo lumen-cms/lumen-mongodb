@@ -15,21 +15,22 @@ test('create tag should fail if not logged in', async t => {
 })
 
 test('crud on collection tags', async t => {
-    const {createTag} = await graphqlRequest(createTagGql, {data: testData}, staticToken.moderator)
-    const {findTags} = await graphqlRequest(findTagsGql, {where: {id: createTag.insertedId}}, staticToken.moderator)
+    const {tagsCreateOne} = await graphqlRequest(createTagGql, {data: testData}, staticToken.moderator)
+    const insertedId = tagsCreateOne.insertedId
+    const {tags} = await graphqlRequest(findTagsGql, {where: {id: {EQ: insertedId}}}, staticToken.moderator)
     const newTitle = 'another title'
-    const {updateTag} = await graphqlRequest(updateTagGql, {
-        where: {id: createTag.insertedId},
+    const {tagsUpdateOne} = await graphqlRequest(updateTagGql, {
+        where: {id: insertedId},
         data: Object.assign({}, testData, {title: newTitle})
     }, staticToken.moderator)
-    const findAfterUpdate = await graphqlRequest(findTagsGql, {where: {id: createTag.insertedId}}, staticToken.moderator)
-        .then(r => r.findTags)
-    const {deleteTag} = await graphqlRequest(deleteTagGql, {where: {id: createTag.insertedId}}, staticToken.moderator)
-    t.is(typeof createTag.insertedId, 'string')
-    t.is(findTags.length, 1)
-    t.is(updateTag.modifiedCount, 1)
-    t.is(deleteTag.deletedCount, 1)
-    t.is(findTags[0].title, testData.title)
-    t.is(findTags[0].type, testData.type)
+    const findAfterUpdate = await graphqlRequest(findTagsGql, {where: {id: {EQ: insertedId}}}, staticToken.moderator)
+        .then(r => r.tags)
+    const {tagsDeleteOne} = await graphqlRequest(deleteTagGql, {where: {id: insertedId}}, staticToken.moderator)
+    t.is(typeof insertedId, 'string')
+    t.is(tags.length, 1)
+    t.is(tagsUpdateOne.modifiedCount, 1)
+    t.is(tagsDeleteOne.deletedCount, 1)
+    t.is(tags[0].title, testData.title)
+    t.is(tags[0].type, testData.type)
     t.is(findAfterUpdate[0].title, newTitle)
 })

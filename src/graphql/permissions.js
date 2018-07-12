@@ -5,6 +5,7 @@ const {rule, shield, and, or, not} = require('graphql-shield')
 // Rules
 
 const isAuthenticated = rule()(async (parent, args, {user}) => {
+    console.log("hier")
     return !!user
 })
 
@@ -68,7 +69,7 @@ const permissions = shield({
         // fruits: and(isAuthenticated, or(isAdmin, isEditor)),
         // customers: and(isAuthenticated, isAdmin)
         findFiles: isAuthenticated,
-        findTags: isAuthenticated
+        tags: isAuthenticated
     },
     Mutation: {
         createArticle: isAuthenticated,
@@ -79,13 +80,16 @@ const permissions = shield({
         moveContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         updateContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         createContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
+
         createFile: isAuthenticated,
         createFileReferences: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         updateFile: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
         deleteFile: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
-        createTag: isAuthenticated,
-        updateTag: or(isModerator, isAdmin, and(isOwnerOfTag, isGuest)),
-        deleteTag: or(isModerator, isAdmin, and(isOwnerOfTag, isGuest)),
+
+        tagsCreateOne: isAuthenticated,
+        tagsUpdateOne: or(isModerator, isAdmin, and(isOwnerOfTag, isGuest)),
+        tagsDeleteOne: or(isModerator, isAdmin, and(isOwnerOfTag, isGuest)),
+
         createPageTemplate: or(isModerator, isAdmin),
         updatePageTemplate: or(isModerator, isAdmin),
         deletePageTemplate: or(isModerator, isAdmin)

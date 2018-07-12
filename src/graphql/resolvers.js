@@ -8,7 +8,6 @@ const tag = require('../modules/tag/tagResolver')
 const files = require('../modules/file/fileResolver')
 const {Slug, SlugPath} = require('./custom/slugScalarType')
 const JSON = require('graphql-type-json')
-
 const {GraphQLDate, GraphQLDateTime} = require('graphql-iso-date')
 module.exports = {
     Query: Object.assign(user.Query, auth.Query, article.Query, files.Query, tag.Query, pageTemplate.Query),

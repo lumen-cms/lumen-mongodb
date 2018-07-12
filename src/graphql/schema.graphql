@@ -1,9 +1,26 @@
-scalar Date
+directive @MongoWhere on FIELD_DEFINITION
+directive @MongoFind on FIELD_DEFINITION
+directive @MongoCreateOne on FIELD_DEFINITION
+directive @MongoUpdateOne on FIELD_DEFINITION
+directive @MongoDeleteOne on FIELD_DEFINITION
+
 scalar GraphQLDate
 scalar GraphQLDateTime
 scalar Slug
 scalar SlugPath
 scalar JSON
+
+input RootStringFilter {
+    EQ: String
+    GT: String
+    GTE: String
+    IN: [String]
+    LT: String
+    LTE: String
+    NEQ: String
+    NIN: [String]
+}
+
 #import Query.*, Mutation.* from '../modules/pageTemplate/schema.graphql'
 #import Query.*, Mutation.* from '../modules/tag/schema.graphql'
 #import Query.*, Mutation.* from '../modules/file/schema.graphql'

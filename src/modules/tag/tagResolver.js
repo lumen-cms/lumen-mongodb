@@ -1,13 +1,6 @@
 const {insertOneMutation, deleteOneMutation, updateOneMutation} = require('../../mongo/mutations/updateOneMutations')
 const {CollectionNames} = require('../../mongo/enum')
 
-const dependencies = {
-    manyToMany: {
-        collection: CollectionNames.articles,
-        self: 'usedOnArticles',
-        foreign: 'tags'
-    }
-}
 
 module.exports = {
     Query: {
@@ -19,19 +12,19 @@ module.exports = {
          * @param rootAuthQuery
          * @return {Promise<void>}
          */
-        findTags: async (parent, {where}, {db, rootAuthMutation}) => {
-            try {
-                // todo build in some filter and extend based on args
-                const find = Object.assign({}, where, rootAuthMutation)
-                const data = await db.collection(CollectionNames.tags)
-                    .find(find)
-                    .toArray()
-                return data
-            } catch (e) {
-                console.error(e)
-                throw new Error(e)
-            }
-        }
+        // findTags: async (parent, {where}, {db, rootAuthMutation}) => {
+        //     try {
+        //         // todo build in some filter and extend based on args
+        //         const find = Object.assign({}, where, rootAuthMutation)
+        //         const data = await db.collection(CollectionNames.tags)
+        //             .find(find)
+        //             .toArray()
+        //         return data
+        //     } catch (e) {
+        //         console.error(e)
+        //         throw new Error(e)
+        //     }
+        // }
     },
     Mutation: {
         /**
@@ -43,9 +36,9 @@ module.exports = {
          * @param user
          * @return {Promise<Promise<{insertedId: string, acknowledged: boolean}>|*>}
          */
-        createTag: async (parent, {data}, {db, projectId, user}) => {
-            return insertOneMutation(db, CollectionNames.tags, data, {projectId, user})
-        },
+        // createTag: async (parent, {data}, {db, projectId, user}) => {
+        //     return insertOneMutation(db, CollectionNames.tags, data, {projectId, user})
+        // },
         /**
          *
          * @param parent
@@ -55,10 +48,10 @@ module.exports = {
          * @param user
          * @return {Promise<Promise<*>|*>}
          */
-        deleteTag: async (parent, {where: {id}}, {db, rootAuthMutation}) => {
-            // todo prevent if used somewhere?
-            return deleteOneMutation(db, CollectionNames.tags, {id}, rootAuthMutation)
-        },
+        // deleteTag: async (parent, {where: {id}}, {db, rootAuthMutation}) => {
+        //     // todo prevent if used somewhere?
+        //     return deleteOneMutation(db, CollectionNames.tags, {id}, rootAuthMutation)
+        // },
         /**
          *
          * @param parent
@@ -68,9 +61,9 @@ module.exports = {
          * @param rootAuthMutation
          * @return {Promise<Promise<{insertedId: string, acknowledged: boolean}>|*>}
          */
-        updateTag: async (parent, {where: {id}, data}, {db, rootAuthMutation}) => {
-            // todo update in all connected collections
-            return updateOneMutation(db, CollectionNames.tags, Object.assign({}, {id}, rootAuthMutation), data)
-        }
+        // updateTag: async (parent, {where: {id}, data}, {db, rootAuthMutation}) => {
+        //     // todo update in all connected collections
+        //     return updateOneMutation(db, CollectionNames.tags, Object.assign({}, {id}, rootAuthMutation), data)
+        // }
     }
 }
