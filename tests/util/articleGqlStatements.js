@@ -3,7 +3,7 @@ const gql = require('graphql-tag')
 
 const deleteArticleGql = gql`
     mutation($where:DeleteArticleInput){
-        deleteArticle(where:$where){
+        articlesDeleteOne(where:$where){
             acknowledged
             deletedCount
         }
@@ -16,7 +16,7 @@ const deleteManyArticlesGql = gql`
 
 const updateArticleGql = gql`
     mutation ($data: ArticleInputUpdate, $where:ArticleWhereInput) {
-        updateArticle(data: $data, where:$where) {
+        articlesUpdateOne(data: $data, where:$where) {
             acknowledged
             matchedCount
             modifiedCount
@@ -26,7 +26,7 @@ const updateArticleGql = gql`
 
 const createArticleGql = gql`
     mutation ($data: ArticleInput) {
-        createArticle(data: $data) {
+        articlesCreateOne(data: $data) {
             insertedId
             acknowledged
         }

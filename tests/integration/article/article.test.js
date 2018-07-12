@@ -23,41 +23,43 @@ const createArticleData = {
 
 test.serial('create article as moderator', async t => {
     createArticleData.slug += new Date().toISOString().toLowerCase()
-    const {createArticle} = await graphqlRequest(createArticleGql, {data: createArticleData}, staticToken.moderator)
-    const {article} = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
-    const {deleteArticle} = await graphqlRequest(deleteArticleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
-    t.is(!!createArticle, true)
-    t.is(typeof createArticle.insertedId === 'string', true)
-    t.is(deleteArticle.deletedCount, 1)
+    const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: createArticleData}, staticToken.moderator)
+    const insertedId = articlesCreateOne.insertedId
+    const {article} = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
+    const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedId}}, staticToken.moderator)
+    t.is(!!articlesCreateOne, true)
+    t.is(typeof insertedId === 'string', true)
+    t.is(articlesDeleteOne.deletedCount, 1)
     // compare article
     t.is(article.slug, createArticleData.slug)
     t.is(article.projectId, 'test')
     t.is(article.title, createArticleData.title)
-    t.is(article.id, createArticle.insertedId)
+    t.is(article.id, insertedId)
     t.is(article.createdBy, currentUserId)
 })
 
 test.serial('update article as moderator', async t => {
     createArticleData.slug += new Date().toISOString().toLowerCase()
-    const {createArticle} = await graphqlRequest(createArticleGql, {data: createArticleData}, staticToken.moderator)
+    const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: createArticleData}, staticToken.moderator)
     const updateArticleData = Object.assign({}, createArticleData, {
         title: createArticleData.title + '-updated'
     })
-    const {updateArticle} = await graphqlRequest(updateArticleGql, {
+    const insertedId = articlesCreateOne.insertedId
+    const {articlesUpdateOne} = await graphqlRequest(updateArticleGql, {
         data: updateArticleData,
-        where: {id: createArticle.insertedId}
+        where: {id: insertedId}
     }, staticToken.moderator)
-    const {article} = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
-    const {deleteArticle} = await graphqlRequest(deleteArticleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
-    t.is(!!createArticle, true)
-    t.is(typeof createArticle.insertedId === 'string', true)
-    t.is(deleteArticle.deletedCount, 1)
+    const {article} = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
+    const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedId}}, staticToken.moderator)
+    t.is(!!articlesCreateOne, true)
+    t.is(typeof insertedId === 'string', true)
+    t.is(articlesDeleteOne.deletedCount, 1)
     // compare article
-    t.is(updateArticle.modifiedCount, 1)
+    t.is(articlesUpdateOne.modifiedCount, 1)
     t.is(article.slug, updateArticleData.slug)
     t.is(article.projectId, 'test')
     t.is(article.title, updateArticleData.title)
-    t.is(article.id, createArticle.insertedId)
+    t.is(article.id, insertedId)
     t.is(article.createdBy, currentUserId)
 })
 
@@ -74,8 +76,8 @@ test.serial('find articles as moderator and not-authorized user', async t => {
         } else {
             currentData.published = true
         }
-        const {createArticle} = await graphqlRequest(createArticleGql, {data: currentData}, staticToken.moderator)
-        createdArticlesIds.push(createArticle.insertedId)
+        const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: currentData}, staticToken.moderator)
+        createdArticlesIds.push(articlesCreateOne.insertedId)
     }
 
     const findAnonymous = await graphqlRequest(findArticlesGql, null)

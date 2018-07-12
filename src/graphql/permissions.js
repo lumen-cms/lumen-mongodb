@@ -65,26 +65,24 @@ const isOwnerOfTag = rule()(async (parent, {where}, {user, db}) => {
 
 const permissions = shield({
     Query: {
-        // frontPage: not(isAuthenticated),
-        // fruits: and(isAuthenticated, or(isAdmin, isEditor)),
-        // customers: and(isAuthenticated, isAdmin)
-        findFiles: isAuthenticated,
+        files: isAuthenticated,
         tags: isAuthenticated
     },
     Mutation: {
-        createArticle: isAuthenticated,
-        deleteArticle: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
-        updateArticle: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
+        articlesCreateOne: isAuthenticated,
+        articlesDeleteOne: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
+        articlesUpdateOne: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         deleteArticlesOnIds: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
+
         deleteContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         moveContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         updateContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
         createContent: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
-
-        createFile: isAuthenticated,
         createFileReferences: or(isModerator, isAdmin, and(isOwnerOfArticle, isGuest)),
-        updateFile: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
-        deleteFile: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
+
+        filesCreateOne: isAuthenticated,
+        filesUpdateOne: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
+        filesDeleteOne: or(isModerator, isAdmin, and(isOwnerOfFile, isGuest)),
 
         tagsCreateOne: isAuthenticated,
         tagsUpdateOne: or(isModerator, isAdmin, and(isOwnerOfTag, isGuest)),

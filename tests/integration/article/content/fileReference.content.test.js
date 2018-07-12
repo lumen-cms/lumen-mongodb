@@ -25,8 +25,9 @@ const testFileReference = {
 
 test.serial('create file reference on article content element', async t => {
     fixtureArticle.slug += new Date().toISOString().toLowerCase()
-    const {createArticle} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
-    const {article} = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
+    const insertedId = articlesCreateOne.insertedId
+    const {article} = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
 
     const contentToModify = article.contentElements[1].children[0].children[1]
     testFileReference.file.id = new Date().toISOString()
@@ -36,19 +37,19 @@ test.serial('create file reference on article content element', async t => {
     const {createFileReferences} = await graphqlRequest(createFileReferencesGql, {
         data: newFileReference,
         where: {
-            articleId: createArticle.insertedId,
+            articleId: insertedId,
             materializedPath: contentToModify.materializedPath,
             id: contentToModify.id
         }
     }, staticToken.moderator)
-    const updatedArticle = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const updatedArticle = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
         .then(r => r.article)
 
-    const {deleteArticle} = await graphqlRequest(deleteArticleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedId}}, staticToken.moderator)
 
     const contentBeforeFileReference = article.contentElements[1].children[0].children[1]
     const contentAfterFileReference = updatedArticle.contentElements[1].children[0].children[1]
-    t.is(deleteArticle.deletedCount, 1)
+    t.is(articlesDeleteOne.deletedCount, 1)
     t.deepEqual(contentBeforeFileReference, contentToModify)
     contentAfterFileReference.fileReferences.map(i => {
         delete i.id
@@ -59,8 +60,9 @@ test.serial('create file reference on article content element', async t => {
 
 test.serial('create background file reference on article content element', async t => {
     fixtureArticle.slug += new Date().toISOString().toLowerCase()
-    const {createArticle} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
-    const {article} = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
+    const insertedId = articlesCreateOne.insertedId
+    const {article} = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
 
     const contentToModify = article.contentElements[1].children[0].children[1]
     testFileReference.file.id = new Date().toISOString()
@@ -71,20 +73,20 @@ test.serial('create background file reference on article content element', async
     const {createFileReferences} = await graphqlRequest(createFileReferencesGql, {
         data: newFileReference,
         where: {
-            articleId: createArticle.insertedId,
+            articleId: insertedId,
             materializedPath: contentToModify.materializedPath,
             id: contentToModify.id
         },
         isBackground: true
     }, staticToken.moderator)
-    const updatedArticle = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const updatedArticle = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
         .then(r => r.article)
 
-    const {deleteArticle} = await graphqlRequest(deleteArticleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedId}}, staticToken.moderator)
 
     const contentBeforeFileReference = article.contentElements[1].children[0].children[1]
     const contentAfterFileReference = updatedArticle.contentElements[1].children[0].children[1]
-    t.is(deleteArticle.deletedCount, 1)
+    t.is(articlesDeleteOne.deletedCount, 1)
     t.deepEqual(contentBeforeFileReference, contentToModify)
     contentAfterFileReference.backgroundFileReferences.map(i => {
         delete i.id
@@ -99,8 +101,9 @@ test.serial('update file reference on article content element', async t => {
     const newFileReference = [Object.assign({}, testFileReference)]
     fixtureArticle.slug += new Date().toISOString().toLowerCase()
     fixtureArticle.contentElements[1].children[0].children[1].fileReferences = newFileReference
-    const {createArticle} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
-    const {article} = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
+    const insertedId = articlesCreateOne.insertedId
+    const {article} = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
     const contentToModify = article.contentElements[1].children[0].children[1]
     const newDescription = 'This is a new description'
     const newData = Object.assign({}, contentToModify, {
@@ -111,20 +114,20 @@ test.serial('update file reference on article content element', async t => {
     const {updateContent} = await graphqlRequest(updateContentGql, {
         data: newData,
         where: {
-            articleId: createArticle.insertedId,
+            articleId: insertedId,
             materializedPath: contentToModify.materializedPath,
             id: contentToModify.id
         }
     }, staticToken.moderator)
 
-    const updatedArticle = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const updatedArticle = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
         .then(r => r.article)
 
-    const {deleteArticle} = await graphqlRequest(deleteArticleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedId}}, staticToken.moderator)
 
     const contentBeforeUpdate = article.contentElements[1].children[0].children[1]
     const contentAfterUpdate= updatedArticle.contentElements[1].children[0].children[1]
-    t.is(deleteArticle.deletedCount, 1)
+    t.is(articlesDeleteOne.deletedCount, 1)
     t.is(contentBeforeUpdate.id, contentAfterUpdate.id)
     t.is(contentBeforeUpdate.type, contentAfterUpdate.type)
     t.deepEqual(contentAfterUpdate, newData)

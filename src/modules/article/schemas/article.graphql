@@ -73,6 +73,20 @@ type ArticleListPayload{
     published: Boolean
 }
 
+
+input FindArticlesInput {
+    id:RootStringFilter
+    slug:RootStringFilter
+    title:RootStringFilter
+    languageKey:RootStringFilter
+    published:RootStringFilter
+    deleted:RootStringFilter
+    AND:[FindArticlesInput]
+    OR:[FindArticlesInput]
+    NOR:[FindArticlesInput]
+}
+
+
 input DeleteArticleInput{
     id:String!
 }

@@ -21,9 +21,9 @@ input FindPageTemplatesInput {
     title:RootStringFilter
     type:RootStringFilter
     key:RootStringFilter
-    AND:[FindTagsInput]
-    OR:[FindTagsInput]
-    NOR:[FindTagsInput]
+    AND:[FindPageTemplatesInput]
+    OR:[FindPageTemplatesInput]
+    NOR:[FindPageTemplatesInput]
 }
 
 input ModifyPageTemplateInput{

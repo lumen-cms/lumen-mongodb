@@ -8,7 +8,7 @@ import fixtureArticle from '../../../util/fixture.article'
 
 test.serial('create article with content and make sure id and path on content exists', async t => {
     fixtureArticle.slug += new Date().toISOString().toLowerCase()
-    const {createArticle} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
+    const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
 
     const newData = {
         type: 'TextImage',
@@ -16,18 +16,19 @@ test.serial('create article with content and make sure id and path on content ex
     }
 
     // create content
+    const articleId = articlesCreateOne.insertedId
     const {createContent} = await graphqlRequest(createContentGql, {
         data: newData,
         where: {
-            articleId: createArticle.insertedId,
+            articleId: articleId,
             materializedPath: '',
             position: 0
         }
     }, staticToken.moderator)
 
-    const {article} = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
-    const {updateArticle} = await graphqlRequest(updateArticleGql, {
-        where: {id: createArticle.insertedId},
+    const {article} = await graphqlRequest(articleGql, {where: {id: articleId}}, staticToken.moderator)
+    const {articlesUpdateOne} = await graphqlRequest(updateArticleGql, {
+        where: {id: articleId},
         data: {
             published: true,
             title: 'My other title',
@@ -35,14 +36,14 @@ test.serial('create article with content and make sure id and path on content ex
             languageKey: 'de'
         }
     }, staticToken.moderator)
-    const afterChangeOfArticlePublish = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const afterChangeOfArticlePublish = await graphqlRequest(articleGql, {where: {id: articleId}}, staticToken.moderator)
         .then(r => r.article)
 
-    const {deleteArticle} = await graphqlRequest(deleteArticleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: articleId}}, staticToken.moderator)
 
-    t.is(!!createArticle, true)
-    t.is(typeof createArticle.insertedId === 'string', true)
-    t.is(deleteArticle.deletedCount, 1)
+    t.is(!!articlesCreateOne, true)
+    t.is(typeof articleId === 'string', true)
+    t.is(articlesDeleteOne.deletedCount, 1)
     t.is(createContent.updated, true)
     // compare article
     t.is(article.contentElements.length, 4)

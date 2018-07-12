@@ -40,6 +40,7 @@ class MongoWhereDirective extends SchemaDirectiveVisitor {
 
 class MongoFindDirective extends SchemaDirectiveVisitor {
     visitFieldDefinition (field) {
+        const {publish} = this.args
         /**
          *
          * @param parent
@@ -49,13 +50,14 @@ class MongoFindDirective extends SchemaDirectiveVisitor {
          * @param info
          * @return {*}
          */
-        field.resolve = async (parent, {where}, {db, rootAuthMutation}, info) => {
+        field.resolve = async (parent, {where}, {db, rootAuthMutation, rootAuthQuery}, info) => {
             const col = CollectionNames[info.fieldName]
+
             if (!col) {
                 throw new Error('current call is not recognized as collection')
             }
-            const mappedWhere = mapMongoArgs(where)
-            const query = Object.assign({}, mappedWhere, rootAuthMutation)
+            const mappedWhere = (where && mapMongoArgs(where)) || {}
+            const query = Object.assign({}, mappedWhere, publish ? rootAuthQuery : rootAuthMutation)
             return await db.collection(col).find(query).toArray()
         }
     }

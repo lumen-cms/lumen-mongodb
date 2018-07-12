@@ -6,8 +6,9 @@ import fixtureArticle from '../../../util/fixture.article'
 
 test.serial('update content of an article', async t => {
     fixtureArticle.slug += new Date().toISOString().toLowerCase()
-    const {createArticle} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
-    const {article} = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
+    const insertedId = articlesCreateOne.insertedId
+    const {article} = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
     const contentToModify = article.contentElements[1].children[0].children[1]
     const newDescription = 'This is a new description'
     const newData = Object.assign({}, contentToModify, {
@@ -18,16 +19,16 @@ test.serial('update content of an article', async t => {
     const {updateContent} = await graphqlRequest(updateContentGql, {
         data: newData,
         where: {
-            articleId: createArticle.insertedId,
+            articleId: insertedId,
             materializedPath: contentToModify.materializedPath,
             id: contentToModify.id
         }
     }, staticToken.moderator)
 
-    const afterUpdated = await graphqlRequest(articleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
-    const {deleteArticle} = await graphqlRequest(deleteArticleGql, {where: {id: createArticle.insertedId}}, staticToken.moderator)
+    const afterUpdated = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
+    const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedId}}, staticToken.moderator)
     const updatedArticle = afterUpdated.article
-    t.is(deleteArticle.deletedCount, 1)
+    t.is(articlesDeleteOne.deletedCount, 1)
     t.is(updatedArticle.contentElements[1].children[0].children[1].description, newDescription)
     t.is(updatedArticle.contentElements[1].children[0].children[1].type, contentToModify.type)
     t.is(updatedArticle.contentElements[1].children[0].children[1].id, contentToModify.id)

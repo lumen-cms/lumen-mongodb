@@ -1,5 +1,5 @@
 directive @MongoWhere on FIELD_DEFINITION
-directive @MongoFind on FIELD_DEFINITION
+directive @MongoFind(publish: Boolean) on FIELD_DEFINITION
 directive @MongoCreateOne on FIELD_DEFINITION
 directive @MongoUpdateOne on FIELD_DEFINITION
 directive @MongoDeleteOne on FIELD_DEFINITION

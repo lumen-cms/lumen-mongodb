@@ -3,15 +3,15 @@
 
 type Query {
     article(where:ArticleWhereInput): Article!
-    findArticles:[ArticleListPayload!]!
+    articles(where:FindArticlesInput):[ArticleListPayload!]! @MongoFind(publish: true)
 }
 
 
 
 type Mutation{
-    createArticle(data:ArticleInput): InsertOnePayload!
-    deleteArticle(where:DeleteArticleInput):DeleteOnePayload!
-    updateArticle(where:ArticleWhereInput, data:ArticleInputUpdate):UpdateOnePayload!
+    articlesCreateOne(data:ArticleInput): InsertOnePayload!
+    articlesDeleteOne(where:DeleteArticleInput):DeleteOnePayload! @MongoDeleteOne
+    articlesUpdateOne(where:ArticleWhereInput, data:ArticleInputUpdate):UpdateOnePayload! @MongoUpdateOne
     deleteArticlesOnIds(where:DeleteManyArticleInput):DeleteOnePayload!
     deleteContent(where:ContentModifyInput!):SimpleUpdatePayload!
     moveContent(where:ContentMoveInput!, isCopy:Boolean, position:Int!):UpdateOnePayload!

@@ -3,7 +3,7 @@ const gql = require('graphql-tag')
 
 const createFileGql = gql`
     mutation ($data:FileInput!){
-        createFile(data:$data){
+        filesCreateOne(data:$data){
             insertedId
             acknowledged
         }
@@ -11,7 +11,7 @@ const createFileGql = gql`
 
 const updateFileGql = gql`
     mutation ($where:FileMutateInput!,$data:FileInput!){
-        updateFile(data:$data, where:$where){
+        filesUpdateOne(data:$data, where:$where){
             acknowledged
             matchedCount
             modifiedCount
@@ -21,14 +21,14 @@ const updateFileGql = gql`
 
 const deleteFileGql = gql`
     mutation($where:FileMutateInput!){
-        deleteFile(where:$where){
+        filesDeleteOne(where:$where){
             acknowledged deletedCount
         }
     }`
 
 const findFilesGql = gql`
-    query($where:FileFindInput){
-        findFiles(where:$where){
+    query($where:FindFilesInput){
+        files(where:$where){
             url
             id
             width

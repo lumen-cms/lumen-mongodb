@@ -19,24 +19,25 @@ test.serial('CRUD on file collection', async t => {
         contentType: headers['content-type']
     }
     // create
-    const {createFile} = await graphqlRequest(createFileGql, {data}, staticToken.moderator)
+    const {filesCreateOne} = await graphqlRequest(createFileGql, {data}, staticToken.moderator)
     // update
-    const {findFiles} = await graphqlRequest(findFilesGql, {where: {id: createFile.insertedId}}, staticToken.moderator)
-    const {updateFile} = await graphqlRequest(updateFileGql, {
-        where: {id: createFile.insertedId},
+    const insertedId = filesCreateOne.insertedId
+    const {files} = await graphqlRequest(findFilesGql, {where: {id: {EQ: insertedId}}}, staticToken.moderator)
+    const {filesUpdatedOne} = await graphqlRequest(updateFileGql, {
+        where: {id: insertedId},
         data: Object.assign({}, data, {name: 'new-name-img'})
     }, staticToken.moderator)
-    const updatedFiles = await graphqlRequest(findFilesGql, {where: {id: createFile.insertedId}}, staticToken.moderator)
-        .then(r => r.findFiles)
+    const updatedFiles = await graphqlRequest(findFilesGql, {where: {id: {EQ: insertedId}}}, staticToken.moderator)
+        .then(r => r.files)
     // delete
-    const {deleteFile} = await graphqlRequest(deleteFileGql, {where: {id: createFile.insertedId}}, staticToken.moderator)
+    const {filesDeleteOne} = await graphqlRequest(deleteFileGql, {where: {id: insertedId}}, staticToken.moderator)
 
-    const firstCreateFile = findFiles[0]
+    const firstCreateFile = files[0]
     delete firstCreateFile.id
     data.size = Number(data.size)
-    t.is(typeof createFile.insertedId, 'string')
-    t.is(deleteFile.deletedCount, 1)
-    t.is(findFiles.length, 1)
+    t.is(typeof insertedId, 'string')
+    t.is(filesDeleteOne.deletedCount, 1)
+    t.is(files.length, 1)
     t.deepEqual(firstCreateFile, data)
     t.is(updatedFiles.length, 1)
     t.is(updatedFiles[0].name, 'new-name-img')
