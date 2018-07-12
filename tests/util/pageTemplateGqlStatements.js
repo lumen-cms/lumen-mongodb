@@ -2,14 +2,14 @@
 const gql = require('graphql-tag')
 
 const createPageTemplateGql = gql`mutation ($data:PageTemplateInput!){
-    createPageTemplate(data:$data){
+    pageTemplatesCreateOne(data:$data){
         acknowledged
         insertedId
     }
 }`
 
 const updatePageTemplateGql = gql`mutation ($data:PageTemplateInput!,$where:ModifyPageTemplateInput!){
-    updatePageTemplate(data:$data,where:$where){
+    pageTemplatesUpdateOne(data:$data,where:$where){
         acknowledged
         matchedCount
         modifiedCount
@@ -19,15 +19,15 @@ const updatePageTemplateGql = gql`mutation ($data:PageTemplateInput!,$where:Modi
 
 
 const deletePageTemplateGql = gql`mutation ($where:ModifyPageTemplateInput!){
-    deletePageTemplate(where:$where){
+    pageTemplatesDeleteOne(where:$where){
         acknowledged
         deletedCount
     }
 }`
 
 
-const findPageTemplatesGql = gql`query ($where:FindPageTemplateInput!){
-    findPageTemplates(where:$where){
+const findPageTemplatesGql = gql`query ($where:FindPageTemplatesInput!){
+    pageTemplates(where:$where){
         body
         bodyJson
         key

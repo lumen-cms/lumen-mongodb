@@ -16,22 +16,28 @@ input PageTemplateInput{
     type:String!
 }
 
-input FindPageTemplateInput{
-    id:String
-    ids:[String!]
+input FindPageTemplatesInput {
+    id:RootStringFilter
+    title:RootStringFilter
+    type:RootStringFilter
+    key:RootStringFilter
+    AND:[FindTagsInput]
+    OR:[FindTagsInput]
+    NOR:[FindTagsInput]
 }
-
 
 input ModifyPageTemplateInput{
     id:String
 }
 
+
+
 type Query {
-    findPageTemplates(where:FindPageTemplateInput!): [PageTemplate]
+    pageTemplates(where:FindPageTemplatesInput!): [PageTemplate] @MongoFind
 }
 
 type Mutation{
-    createPageTemplate(data:PageTemplateInput!): InsertOnePayload!
-    deletePageTemplate(where:ModifyPageTemplateInput!):DeleteOnePayload!
-    updatePageTemplate(where:ModifyPageTemplateInput!, data:PageTemplateInput!):UpdateOnePayload!
+    pageTemplatesCreateOne(data:PageTemplateInput!): InsertOnePayload! @MongoCreateOne
+    pageTemplatesDeleteOne(where:ModifyPageTemplateInput!):DeleteOnePayload! @MongoDeleteOne
+    pageTemplatesUpdateOne(where:ModifyPageTemplateInput!, data:PageTemplateInput!):UpdateOnePayload! @MongoUpdateOne
 }

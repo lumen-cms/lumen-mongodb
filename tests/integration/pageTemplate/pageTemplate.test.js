@@ -27,23 +27,24 @@ test('create page template should fail if not logged in', async t => {
 })
 
 test('crud on page template', async t => {
-    const {createPageTemplate} = await graphqlRequest(createPageTemplateGql, {data: testData},staticToken.moderator)
-    const {findPageTemplates} = await graphqlRequest(findPageTemplatesGql, {where: {id: createPageTemplate.insertedId}})
+    const {pageTemplatesCreateOne} = await graphqlRequest(createPageTemplateGql, {data: testData},staticToken.moderator)
+    const insertedId = pageTemplatesCreateOne.insertedId
+    const {pageTemplates} = await graphqlRequest(findPageTemplatesGql, {where: {id: {EQ:insertedId}}})
     const newTitle = 'changed title of this thing'
-    const {updatePageTemplate} = await graphqlRequest(updatePageTemplateGql, {
-        where: {id: createPageTemplate.insertedId},
+    const {pageTemplatesUpdateOne} = await graphqlRequest(updatePageTemplateGql, {
+        where: {id: insertedId},
         data: Object.assign({}, testData, {title: newTitle})
     },staticToken.moderator)
-    const findAfterUpdate = await graphqlRequest(findPageTemplatesGql, {where: {id: createPageTemplate.insertedId}})
-        .then(r => r.findPageTemplates)
+    const findAfterUpdate = await graphqlRequest(findPageTemplatesGql, {where: {id: {EQ:insertedId}}})
+        .then(r => r.pageTemplates)
 
-    const {deletePageTemplate} = await graphqlRequest(deletePageTemplateGql, {where: {id: createPageTemplate.insertedId}},staticToken.moderator)
+    const {pageTemplatesDeleteOne} = await graphqlRequest(deletePageTemplateGql, {where: {id: insertedId}},staticToken.moderator)
 
-    t.is(typeof createPageTemplate.insertedId, 'string')
-    t.is(findPageTemplates.length, 1)
-    t.is(updatePageTemplate.modifiedCount, 1)
-    t.is(deletePageTemplate.deletedCount, 1)
-    t.is(findPageTemplates[0].title, testData.title)
-    t.is(findPageTemplates[0].type, testData.type)
+    t.is(typeof pageTemplatesCreateOne.insertedId, 'string')
+    t.is(pageTemplates.length, 1)
+    t.is(pageTemplatesUpdateOne.modifiedCount, 1)
+    t.is(pageTemplatesDeleteOne.deletedCount, 1)
+    t.is(pageTemplates[0].title, testData.title)
+    t.is(pageTemplates[0].type, testData.type)
     t.is(findAfterUpdate[0].title, newTitle)
 })

@@ -90,9 +90,9 @@ const permissions = shield({
         tagsUpdateOne: or(isModerator, isAdmin, and(isOwnerOfTag, isGuest)),
         tagsDeleteOne: or(isModerator, isAdmin, and(isOwnerOfTag, isGuest)),
 
-        createPageTemplate: or(isModerator, isAdmin),
-        updatePageTemplate: or(isModerator, isAdmin),
-        deletePageTemplate: or(isModerator, isAdmin)
+        pageTemplatesCreateOne: or(isModerator, isAdmin),
+        pageTemplatesDeleteOne: or(isModerator, isAdmin),
+        pageTemplatesUpdateOne: or(isModerator, isAdmin)
     }
     // Fruit: isAuthenticated,
     // Customer: isAdmin
