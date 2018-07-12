@@ -133,7 +133,7 @@ const articleGql = gql`
 
 const findArticlesGql = gql`
     query{
-        findArticles{
+        articles{
             id
             slug
             title

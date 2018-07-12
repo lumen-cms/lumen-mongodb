@@ -5,7 +5,6 @@ const {rule, shield, and, or, not} = require('graphql-shield')
 // Rules
 
 const isAuthenticated = rule()(async (parent, args, {user}) => {
-    console.log("hier")
     return !!user
 })
 

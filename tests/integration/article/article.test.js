@@ -81,7 +81,7 @@ test.serial('find articles as moderator and not-authorized user', async t => {
     }
 
     const findAnonymous = await graphqlRequest(findArticlesGql, null)
-        .then(r => r.findArticles)
+        .then(r => r.articles)
 
     const {deleteArticlesOnIds} = await graphqlRequest(deleteManyArticlesGql, {where: {ids: createdArticlesIds}}, staticToken.moderator)
     t.is(deleteArticlesOnIds.deletedCount, 5)

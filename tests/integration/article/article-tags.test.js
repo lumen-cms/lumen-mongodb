@@ -30,11 +30,11 @@ const createTagData = {
 
 test.serial('add tag to article and remove the tag again with update article method', async t => {
     createTagData.slug += new Date().toISOString().toLowerCase()
-    const {createTag} = await graphqlRequest(createTagGql, {data: createTagData}, staticToken.moderator)
+    const {tagsCreateOne} = await graphqlRequest(createTagGql, {data: createTagData}, staticToken.moderator)
     createArticleData.slug += new Date().toISOString().toLowerCase()
     const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: createArticleData}, staticToken.moderator)
     const insertedArticleId = articlesCreateOne.insertedId
-    const insertedTagId = createTag.insertedId
+    const insertedTagId = tagsCreateOne.insertedId
 
     // add some tag
     const {articlesUpdateOne} = await graphqlRequest(updateArticleGql, {
@@ -49,7 +49,7 @@ test.serial('add tag to article and remove the tag again with update article met
     }, staticToken.moderator)
 
     const {article} = await graphqlRequest(articleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
-    const {findTags} = await graphqlRequest(findTagsGql, {where: {id: insertedTagId}}, staticToken.moderator)
+    const {tags} = await graphqlRequest(findTagsGql, {where: {id: {EQ: insertedTagId}}}, staticToken.moderator)
 
     // reset tags array
     const updateArticleWithNoRef = await graphqlRequest(updateArticleGql, {
@@ -61,13 +61,13 @@ test.serial('add tag to article and remove the tag again with update article met
         .then(r => r.articlesUpdateOne)
     const articleAfterReset = await graphqlRequest(articleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
         .then(r => r.article)
-    const tagsAfterReset = await graphqlRequest(findTagsGql, {where: {id: insertedTagId}}, staticToken.moderator)
-        .then(r => r.findTags)
+    const tagsAfterReset = await graphqlRequest(findTagsGql, {where: {id: {EQ:insertedTagId}}}, staticToken.moderator)
+        .then(r => r.tags)
     const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
-    const {deleteTag} = await graphqlRequest(deleteTagGql, {where: {id: insertedTagId}}, staticToken.moderator)
-    const tag = findTags[0]
+    const {tagsDeleteOne} = await graphqlRequest(deleteTagGql, {where: {id: insertedTagId}}, staticToken.moderator)
+    const tag = tags[0]
     t.is(tag.id, insertedTagId)
-    t.is(deleteTag.deletedCount, 1)
+    t.is(tagsDeleteOne.deletedCount, 1)
     t.is(typeof insertedTagId, 'string')
     t.is(!!articlesCreateOne, true)
     t.is(typeof insertedArticleId, 'string')
@@ -83,11 +83,11 @@ test.serial('add tag to article and remove the tag again with update article met
 
 test.serial('add tag to article and rename tag', async t => {
     createTagData.slug += new Date().toISOString().toLowerCase()
-    const {createTag} = await graphqlRequest(createTagGql, {data: createTagData}, staticToken.moderator)
+    const {tagsCreateOne} = await graphqlRequest(createTagGql, {data: createTagData}, staticToken.moderator)
     createArticleData.slug += new Date().toISOString().toLowerCase()
     const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: createArticleData}, staticToken.moderator)
     const insertedArticleId = articlesCreateOne.insertedId
-    const insertedTagId = createTag.insertedId
+    const insertedTagId = tagsCreateOne.insertedId
 
     // add some tag
     const {articlesUpdateOne} = await graphqlRequest(updateArticleGql, {
@@ -102,7 +102,7 @@ test.serial('add tag to article and rename tag', async t => {
     }, staticToken.moderator)
 
     const {article} = await graphqlRequest(articleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
-    const {findTags} = await graphqlRequest(findTagsGql, {where: {id: insertedTagId}}, staticToken.moderator)
+    const {tags} = await graphqlRequest(findTagsGql, {where: {id: {EQ:insertedTagId}}}, staticToken.moderator)
 
     // rename tag title
     const newTagTitle = 'some awesome new title'
@@ -113,16 +113,16 @@ test.serial('add tag to article and rename tag', async t => {
         },
         where: {id: insertedTagId}
     }, staticToken.moderator)
-        .then(r => r.updateTag)
+        .then(r => r.tagsUpdateOne)
     const articleAfterReset = await graphqlRequest(articleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
         .then(r => r.article)
-    const tagsAfterReset = await graphqlRequest(findTagsGql, {where: {id: insertedTagId}}, staticToken.moderator)
-        .then(r => r.findTags)
+    const tagsAfterReset = await graphqlRequest(findTagsGql, {where: {id: {EQ:insertedTagId}}}, staticToken.moderator)
+        .then(r => r.tags)
     const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
-    const {deleteTag} = await graphqlRequest(deleteTagGql, {where: {id: insertedTagId}}, staticToken.moderator)
-    const tag = findTags[0]
+    const {tagsDeleteOne} = await graphqlRequest(deleteTagGql, {where: {id: insertedTagId}}, staticToken.moderator)
+    const tag = tags[0]
     t.is(tag.id, insertedTagId)
-    t.is(deleteTag.deletedCount, 1)
+    t.is(tagsDeleteOne.deletedCount, 1)
     t.is(typeof insertedTagId, 'string')
     t.is(!!articlesCreateOne, true)
     t.is(typeof insertedArticleId, 'string')
@@ -139,11 +139,11 @@ test.serial('add tag to article and rename tag', async t => {
 
 test.serial('add tag to article and delete tag afterwards', async t => {
     createTagData.slug += new Date().toISOString().toLowerCase()
-    const {createTag} = await graphqlRequest(createTagGql, {data: createTagData}, staticToken.moderator)
+    const {tagsCreateOne} = await graphqlRequest(createTagGql, {data: createTagData}, staticToken.moderator)
     createArticleData.slug += new Date().toISOString().toLowerCase()
     const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: createArticleData}, staticToken.moderator)
     const insertedArticleId = articlesCreateOne.insertedId
-    const insertedTagId = createTag.insertedId
+    const insertedTagId = tagsCreateOne.insertedId
 
     // add some tag
     const {articlesUpdateOne} = await graphqlRequest(updateArticleGql, {
@@ -158,32 +158,32 @@ test.serial('add tag to article and delete tag afterwards', async t => {
     }, staticToken.moderator)
 
     const {article} = await graphqlRequest(articleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
-    const {findTags} = await graphqlRequest(findTagsGql, {where: {id: insertedTagId}}, staticToken.moderator)
+    const {tags} = await graphqlRequest(findTagsGql, {where: {id: {EQ:insertedTagId}}}, staticToken.moderator)
 
     // delete tag again
-    const {deleteTag} = await graphqlRequest(deleteTagGql, {
+    const {tagsDeleteOne} = await graphqlRequest(deleteTagGql, {
         where: {id: insertedTagId}
     }, staticToken.moderator)
     const articleAfterReset = await graphqlRequest(articleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
         .then(r => r.article)
-    const tagsAfterReset = await graphqlRequest(findTagsGql, {where: {id: insertedTagId}}, staticToken.moderator)
-        .then(r => r.findTags)
+    const tagsAfterReset = await graphqlRequest(findTagsGql, {where: {id: {EQ:insertedTagId}}}, staticToken.moderator)
+        .then(r => r.tags)
     const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
 
-    t.is(deleteTag.deletedCount, 1)
+    t.is(tagsDeleteOne.deletedCount, 1)
     t.is(articleAfterReset.tags.length, 0)
     t.is(tagsAfterReset.length, 0)
 })
 
 test.serial('add tag to article and delete article afterwards', async t => {
     createTagData.slug += new Date().toISOString().toLowerCase()
-    const {createTag} = await graphqlRequest(createTagGql, {data: createTagData}, staticToken.moderator)
+    const {tagsCreateOne} = await graphqlRequest(createTagGql, {data: createTagData}, staticToken.moderator)
 
     const slug2 = createTagData.slug + new Date().toISOString().toLowerCase() + 2
     const createTag2 = await graphqlRequest(createTagGql, {data: Object.assign({}, createTagData, {slug: slug2})}, staticToken.moderator)
-        .then(r => r.createTag)
+        .then(r => r.tagsCreateOne)
 
-    const insertedTagId = createTag.insertedId
+    const insertedTagId = tagsCreateOne.insertedId
     const insertedTagId2 = createTag2.insertedId
 
     createArticleData.slug += new Date().toISOString().toLowerCase()
@@ -224,15 +224,15 @@ test.serial('add tag to article and delete article afterwards', async t => {
     }, staticToken.moderator)
 
     const {article} = await graphqlRequest(articleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
-    const {findTags} = await graphqlRequest(findTagsGql, {where: {id: {$in: [insertedTagId, insertedTagId2]}}}, staticToken.moderator)
+    const {tags} = await graphqlRequest(findTagsGql, {where: {id: {IN: [insertedTagId, insertedTagId2]}}}, staticToken.moderator)
 
     // delete tag again
     const {articlesDeleteOne} = await graphqlRequest(deleteArticleGql, {where: {id: insertedArticleId}}, staticToken.moderator)
 
-    const tagsAfterReset = await graphqlRequest(findTagsGql, {where: {id: insertedTagId}}, staticToken.moderator)
-        .then(r => r.findTags)
+    const tagsAfterReset = await graphqlRequest(findTagsGql, {where: {id: {IN: [insertedTagId2, insertedTagId]}}}, staticToken.moderator)
+        .then(r => r.tags)
 
-    const {deleteTag} = await graphqlRequest(deleteTagGql, {
+    const {tagsDeleteOne} = await graphqlRequest(deleteTagGql, {
         where: {id: insertedTagId}
     }, staticToken.moderator)
     const deleteArticle2 = await graphqlRequest(deleteArticleGql, {where: {id: insertedArticleId2}}, staticToken.moderator)
@@ -241,17 +241,17 @@ test.serial('add tag to article and delete article afterwards', async t => {
     const deleteTag2 = await graphqlRequest(deleteTagGql, {
         where: {id: insertedTagId2}
     }, staticToken.moderator)
-        .then(r => r.deleteTag)
+        .then(r => r.tagsDeleteOne)
 
 
     // todo need to fix the correct count
 
 
-    t.is(findTags.length, 1)
+    t.is(tags.length, 2)
     t.is(article.tags.length, 2)
     t.is(articlesDeleteOne.deletedCount, 1)
     t.is(deleteArticle2.deletedCount, 1)
-    t.is(deleteTag.deletedCount, 1)
+    t.is(tagsDeleteOne.deletedCount, 1)
     t.is(deleteTag2.deletedCount, 1)
     t.is(tagsAfterReset.length, 2)
     t.is(tagsAfterReset[0]._meta.articles.length, 0)
