@@ -1,3 +1,4 @@
+const {findRelationsOfCollection} = require('./shared/findRelationsOfCollection')
 const {Relations, RelationTypes} = require('../../relations')
 
 /**
@@ -9,36 +10,32 @@ const {Relations, RelationTypes} = require('../../relations')
  */
 async function removeRelatedFields (db, collectionName, idOfUpdate) {
     // update related fields
-    let updated = {}
-    if (Relations.hasOwnProperty(collectionName)) {
-        Object.keys(Relations[collectionName]).forEach(async foreignCollectionName => {
-            /**
-             * @type {MongoRelationConfig}
-             */
-            const updateConfig = Relations[collectionName][foreignCollectionName]
-            if (updateConfig.type === RelationTypes.manyToFew) {
-                updated[foreignCollectionName] = await db.collection(foreignCollectionName).updateMany(
-                    {[`${updateConfig.foreignField}.id`]: idOfUpdate},
+    const relations = findRelationsOfCollection(collectionName)
+    const updateResults = {}
+    if (relations.length) {
+        relations.forEach(async config => {
+            if (config.type === RelationTypes.fewToMany && config.many === collectionName) {
+                // update few relation
+                updateResults[config.few] = await db.collection(config.few).updateMany(
+                    {[`${config.fewField}.id`]: idOfUpdate},
                     {
                         $pull: {
-                            [`${updateConfig.foreignField}`]: {id: idOfUpdate}
+                            [`${config.fewField}`]: {id: idOfUpdate}
                         }
                     })
-            } else if (updateConfig.type === RelationTypes.fewToMany) {
-                updated[foreignCollectionName] = await db.collection(foreignCollectionName).updateMany(
-                    {[updateConfig.foreignField]: idOfUpdate},
+            } else if (config.type === RelationTypes.fewToMany && config.few === collectionName) {
+                updateResults[config.many] = await db.collection(config.many).updateMany(
+                    {[config.manyField]: idOfUpdate},
                     {
                         $pull: {
-                            [updateConfig.foreignField]: idOfUpdate
+                            [config.manyField]: idOfUpdate
                         }
                     }
                 )
             }
         })
-    } else {
-        return Promise.resolve(true)
     }
-    return updated
+    return updateResults
 }
 
 module.exports = {removeRelatedFields}

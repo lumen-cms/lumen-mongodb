@@ -25,7 +25,8 @@ async function insertOneMutation (db, collectionName, data, context) {
 
         // update related fields
         if (insert.insertedId) {
-            await createRelatedFields(db, collectionName, insert.insertedId)
+            const insertedIdAsString = insert.insertedId.toString()
+            await createRelatedFields(db, collectionName, insertedIdAsString, data)
         }
 
         return insert
@@ -50,7 +51,8 @@ async function deleteOneMutation (db, collectionName, find, rootAuthMutation) {
         const main = await db.collection(collectionName).deleteOne(Object.assign({}, find, rootAuthMutation))
         // update related collections
         if (main.deletedCount === 1) {
-            await removeRelatedFields(db, collectionName, find.id)
+            const c = await removeRelatedFields(db, collectionName, find.id)
+            // console.log(c)
         }
         return main
     } catch (e) {

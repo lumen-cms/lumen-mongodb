@@ -1,18 +1,28 @@
-const {updateFewToMany} = require('./updateRelatedFields')
+const {findRelationsOfCollection} = require('./shared/findRelationsOfCollection')
+const {updateManyCollection} = require('./shared/updateManyCollection')
 const {Relations, RelationTypes} = require('../../relations')
 
+/**
+ *
+ * @param db
+ * @param collectionName
+ * @param idOfUpdate
+ * @param data
+ * @return {Promise<Array>}
+ */
 async function createRelatedFields (db, collectionName, idOfUpdate, data) {
-    if (Relations.hasOwnProperty(collectionName)) {
-        Object.keys(Relations[collectionName]).forEach(async foreignCollectionName => {
-            /**
-             * @type {MongoRelationConfig}
-             */
-            const updateConfig = Relations[collectionName][foreignCollectionName]
-            if (updateConfig.type === RelationTypes.fewToMany) {
-                await updateFewToMany(db, updateConfig, foreignCollectionName, idOfUpdate, data, true)
+    const relations = findRelationsOfCollection(collectionName)
+    const updateResults = []
+    if (relations.length) {
+        relations.forEach(async config => {
+            if (config.type === RelationTypes.fewToMany && config.few === collectionName) {
+                // update any fewToMany relations. Only few collection will be updated on create
+                const r = await updateManyCollection(db, config, idOfUpdate, data, true)
+                updateResults.push(r)
             }
         })
     }
+    return updateResults
 }
 
 module.exports = {createRelatedFields}
