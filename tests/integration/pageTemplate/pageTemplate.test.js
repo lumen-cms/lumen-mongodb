@@ -27,7 +27,7 @@ test('create page template should fail if not logged in', async t => {
 })
 
 test('crud on page template', async t => {
-    const {pageTemplatesCreateOne} = await graphqlRequest(createPageTemplateGql, {data: testData},staticToken.moderator)
+    const {pageTemplatesCreateOne} = await graphqlRequest(createPageTemplateGql, {data: testData}, staticToken.moderator)
     const insertedId = pageTemplatesCreateOne.insertedId
     const {pageTemplates} = await graphqlRequest(findPageTemplatesGql, {where: {id: {EQ:insertedId}}})
     const newTitle = 'changed title of this thing'

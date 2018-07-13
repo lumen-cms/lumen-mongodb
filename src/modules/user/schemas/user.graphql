@@ -1,5 +1,3 @@
-# User Schema
-
 enum Role{
     OPERATOR
     ADMIN

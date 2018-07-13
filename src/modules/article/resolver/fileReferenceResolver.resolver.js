@@ -1,6 +1,5 @@
 const {getMaterializedMongoModifier, createObjectIdString} = require('../../../util/addObjectIdsToArray')
 const {CollectionNames} = require('../../../mongo/enum')
-const {documentExistsOnce} = require('../../../mongo/mutations/documentExists')
 
 module.exports = {
     Mutation: {
@@ -45,40 +44,6 @@ module.exports = {
             })
             // todo update references to File to indicate the use of files + write a test
             return {updated: !!res.value}
-        },
-        /**
-         *
-         * @param parent
-         * @param articleId
-         * @param id
-         * @param materializedPath
-         * @param data
-         * @param isBackground
-         * @param db
-         * @param rootAuthMutation
-         * @return {Promise<void>}
-         */
-        // updateFileReference: async (parent, {where: {articleId, id, materializedPath, fileReferenceId}, data, isBackground}, {db, rootAuthMutation}) => {
-        //     const {queryPath, mutationPath} = getMaterializedMongoModifier(materializedPath)
-        //     const find = Object.assign({
-        //         id: articleId,
-        //         [queryPath]: id
-        //     }, rootAuthMutation)
-        //     const collection = db.collection(CollectionNames.articles)
-        //     const col = isBackground ? 'backgroundFileReferences' : 'fileReferences'
-        //     const pathToMutate = `${mutationPath}.$.${col}`
-        //     const res = await collection.findOneAndUpdate(find, {
-        //         $set: {
-        //             [pathToMutate]: data
-        //         }
-        //     }, {
-        //         projection: {
-        //             id: 1, _id: 0
-        //         }
-        //     })
-        //     // todo update references to File to indicate the use of files + write a test
-        //     return {updated: !!res.value}
-        //
-        // }
+        }
     }
 }

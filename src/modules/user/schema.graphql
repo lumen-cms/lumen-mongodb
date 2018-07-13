@@ -1,7 +1,3 @@
-#import User UserListPayload Permission from './schemas/user.graphql'
-#import MutationType, UpdateOnePayload, InsertOnePayload, DeleteOnePayload from '../../graphql/genericTypesAndEnums.graphql'
-
-
 type SignupUserPayload{
     id:String!
     firstName:String!

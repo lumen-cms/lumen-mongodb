@@ -4,8 +4,6 @@ type Author {
     file:File
 }
 
-
-
 type Article{
     _id: String
     id: String

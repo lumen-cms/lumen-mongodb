@@ -1,6 +1,3 @@
-#import * from './schemas/content.graphql'
-#import * from './schemas/article.graphql'
-
 type Query {
     article(where:ArticleWhereInput): Article!
     articles(where:FindArticlesInput):[ArticleListPayload!]! @MongoFind(publish: true)

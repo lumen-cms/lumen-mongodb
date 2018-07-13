@@ -1,6 +1,18 @@
 import test from 'ava'
 import {staticToken, graphqlRequest} from '../../util/graphqlRequest'
-import {createArticleGql, deleteArticleGql, deleteManyArticlesGql, updateArticleGql,articleGql,findArticlesGql} from '../../util/articleGqlStatements'
+import {
+    createArticleGql,
+    deleteArticleGql,
+    deleteManyArticlesGql,
+    updateArticleGql,
+    articleGql,
+    findArticlesGql
+} from '../../util/articleGqlStatements'
+import {signTokenForUser} from '../../../src/util/contextHelper'
+import {UserRole} from '../../../src/mongo/enum'
+
+require('dotenv').config() // need credentials
+
 
 const currentUserId = '5b387f6652a5b71ec2ffe921'
 
@@ -64,9 +76,30 @@ test.serial('update article as moderator', async t => {
 })
 
 
+const permissions = [{
+    projectId: 'test2',
+    role: UserRole.MODERATOR
+}]
+
+const separateUser = {
+    username: 'djgarms+84@gmail.com',
+    profile: {
+        firstName: 'another test',
+        lastName: 'superduper'
+    },
+    permissions
+}
+
 test.serial('find articles as moderator and not-authorized user', async t => {
     createArticleData.slug += new Date().toISOString().toLowerCase()
     const createdArticlesIds = []
+    let currentToken
+    try {
+        currentToken = {token: signTokenForUser(separateUser), projectId: 'test2'}
+    } catch (e) {
+        throw new Error(e)
+    }
+
     for (let i = 1; i <= 5; i++) {
         const currentData = Object.assign({}, createArticleData, {
             slug: createArticleData.slug + '-' + i
@@ -76,16 +109,21 @@ test.serial('find articles as moderator and not-authorized user', async t => {
         } else {
             currentData.published = true
         }
-        const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: currentData}, staticToken.moderator)
+        const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: currentData}, currentToken)
         createdArticlesIds.push(articlesCreateOne.insertedId)
     }
 
-    const findAnonymous = await graphqlRequest(findArticlesGql, null)
+    const findAnonymousOnOtherProject = await graphqlRequest(findArticlesGql, null, {projectId: 'test3'})
         .then(r => r.articles)
 
-    const {deleteArticlesOnIds} = await graphqlRequest(deleteManyArticlesGql, {where: {ids: createdArticlesIds}}, staticToken.moderator)
+    const findAnonymousOnSameProject = await graphqlRequest(findArticlesGql, null, {projectId: currentToken.projectId})
+        .then(r => r.articles)
+
+    const {deleteArticlesOnIds} = await graphqlRequest(deleteManyArticlesGql, {where: {ids: createdArticlesIds}}, currentToken)
     t.is(deleteArticlesOnIds.deletedCount, 5)
     // compare article
     t.is(createdArticlesIds.length, 5)
-    t.is(findAnonymous.length, 3)
+    t.is(findAnonymousOnOtherProject.length, 0)
+    t.is(findAnonymousOnSameProject.length, 3)
+
 })

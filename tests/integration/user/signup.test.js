@@ -1,46 +1,6 @@
 import test from 'ava'
 import {graphqlRequest} from '../../util/graphqlRequest'
-
-const signupGql = `
-mutation signup($data:SignupInput) {
-  signup(data:$data){ 
-    token 
-    user { 
-        id 
-        firstName 
-        lastName
-        email
-        permissions{
-           projectId role
-        }
-    }
-  }   
-}`
-
-const meGql = `
-query me {me{id username profile{firstName lastName}}}
-`
-
-const loginGql = `
-mutation login($data:LoginInput){
-  login(data:$data){
-    token 
-    user { 
-        id 
-        firstName 
-        lastName
-        email
-        permissions{
-           projectId role
-        }
-    }
-  }
-}`
-
-const deleteGql = `
-mutation deleteUser($where:DeleteUserInput){
-  deleteUser(where:$where){acknowledged deletedCount}
-}`
+import {deleteGql, loginGql, meGql, signupGql} from '../../util/userGqlStatements'
 
 const signupData = {
     'firstName': 'Dominic',

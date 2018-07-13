@@ -3,11 +3,13 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const {GraphQLServer, PubSub, withFilter} = require('graphql-yoga')
 require('dotenv').config()
 const {connectMongoDb} = require('./mongo/initDb')
-const resolvers = require('./graphql/resolvers')
+// const resolvers = require('./graphql/resolvers')
 const {getAuthBaseMutation, getAuthBaseQuery} = require('./util/queryAuthHelper')
-const {permissions} = require('./graphql/permissions')
+const {permissions} = require('./graphql/middleware/permissions')
 const {getProjectId, getUserRoleOnProjectID} = require('./util/contextHelper')
 const {MongoWhereDirective, MongoFindDirective, MongoCreateOneDirective, MongoUpdateOneDirective, MongoDeleteOneDirective} = require('./graphql/directives/MongoGenericDirectives')
+const typeDefs = require('./graphql/mergeTypeDefs')
+const resolvers = require('./graphql/mergeResolvers')
 
 async function startServer () {
     /**
@@ -53,7 +55,7 @@ async function startServer () {
      * @type {GraphQLServer}
      */
     const Server = new GraphQLServer({
-        typeDefs: resolve(__dirname, './graphql/schema.graphql'),
+        typeDefs,
         resolvers,
         context,
         middlewares: [permissions],

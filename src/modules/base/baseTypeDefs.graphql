@@ -21,9 +21,29 @@ input RootStringFilter {
     NIN: [String]
 }
 
-#import Query.*, Mutation.* from '../modules/pageTemplate/schema.graphql'
-#import Query.*, Mutation.* from '../modules/tag/schema.graphql'
-#import Query.*, Mutation.* from '../modules/file/schema.graphql'
-#import Query.*, Subscription.*, Mutation.* from '../modules/user/schema.graphql'
-#import Query.*, Mutation.* from '../modules/article/schema.graphql'
-#import * from './genericTypesAndEnums.graphql'
+enum MutationType {
+    CREATED
+    UPDATED
+    DELETED
+}
+
+type UpdateOnePayload{
+    acknowledged: Boolean
+    matchedCount: Int
+    modifiedCount: Int
+    upsertedId: String
+}
+
+type InsertOnePayload{
+    acknowledged: Boolean
+    insertedId: String
+}
+
+type DeleteOnePayload{
+    acknowledged:Boolean
+    deletedCount:Int
+}
+
+type SimpleUpdatePayload{
+    updated: Boolean
+}

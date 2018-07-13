@@ -1,4 +1,3 @@
-/* eslint-disable node/no-unpublished-require */
 const gql = require('graphql-tag')
 
 const createPageTemplateGql = gql`mutation ($data:PageTemplateInput!){

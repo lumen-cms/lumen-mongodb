@@ -1,6 +1,6 @@
-const {documentExists} = require('../mongo/mutations/documentExists')
-const CollectionNames = require('../mongo/enum').CollectionNames
-const {UserRole} = require('../mongo/enum')
+const {documentExists} = require('../../mongo/mutations/documentExists')
+const CollectionNames = require('../../mongo/enum').CollectionNames
+const {UserRole} = require('../../mongo/enum')
 const {rule, shield, and, or, not} = require('graphql-shield')
 // Rules
 

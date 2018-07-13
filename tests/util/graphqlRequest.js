@@ -16,9 +16,27 @@ const TestUser = {
     }]
 }
 
-function getGqlClient (token) {
+/**
+ *
+ * @param {{token:string,projectId:string|string}} tokenObj
+ * @return {GraphQLClient | request}
+ */
+function getGqlClient (tokenObj) {
+    let projectId = 'test'
+    if (!tokenObj) {
+        return new GraphQLClient('http://localhost:4000', {
+            headers: {projectId}
+        })
+    }
+    let token
+    if (typeof tokenObj === 'string') {
+        token = tokenObj
+    } else if (typeof tokenObj === 'object') {
+        token = tokenObj.token
+        projectId = tokenObj.projectId || projectId
+    }
     const headers = {
-        projectId: 'test'
+        projectId
     }
     if (token) {
         headers.Authorization = `Bearer ${token}`
