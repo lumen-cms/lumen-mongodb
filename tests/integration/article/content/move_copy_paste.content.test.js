@@ -5,7 +5,7 @@ import {moveContentGql} from '../../../util/contentGqlStatements'
 import fixtureArticle from '../../../util/fixture.article'
 
 test.serial('move one content as cut and paste', async t => {
-    fixtureArticle.slug += new Date().toISOString().toLowerCase()
+    fixtureArticle.slug += new Date().toISOString().toLowerCase() + 4688
     const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
     const insertedId = articlesCreateOne.insertedId
     const {article} = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)
@@ -48,7 +48,7 @@ test.serial('move one content as cut and paste', async t => {
 })
 
 test.serial('move one content as copy and paste', async t => {
-    fixtureArticle.slug += new Date().toISOString().toLowerCase()
+    fixtureArticle.slug += new Date().toISOString().toLowerCase() + 79797
     const {articlesCreateOne} = await graphqlRequest(createArticleGql, {data: fixtureArticle}, staticToken.moderator)
     const insertedId = articlesCreateOne.insertedId
     const {article} = await graphqlRequest(articleGql, {where: {id: insertedId}}, staticToken.moderator)

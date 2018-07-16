@@ -9,6 +9,10 @@ type File{
     height: Int
 }
 
+type FileMetaPayload{
+    articlesPreviewImages:[String]
+}
+
 type FilePayload{
     url:String
     key:String
@@ -19,6 +23,7 @@ type FilePayload{
     width: Int
     height: Int
     origin: String
+    _meta: FileMetaPayload
 }
 
 

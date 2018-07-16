@@ -15,7 +15,7 @@ async function removeRelatedFields (db, collectionName, idOfUpdate) {
     if (relations.length) {
         relations.forEach(async config => {
             if (config.type === RelationTypes.fewToMany && config.many === collectionName) {
-                // update few relation
+                // update "few" collection if "many" deleted
                 updateResults[config.few] = await db.collection(config.few).updateMany(
                     {[`${config.fewField}.id`]: idOfUpdate},
                     {
@@ -23,7 +23,8 @@ async function removeRelatedFields (db, collectionName, idOfUpdate) {
                             [`${config.fewField}`]: {id: idOfUpdate}
                         }
                     })
-            } else if (config.type === RelationTypes.fewToMany && config.few === collectionName) {
+            } else if ([RelationTypes.fewToMany, RelationTypes.oneToMany].includes(config.type) && config.few === collectionName) {
+                // update "many" if one|few deleted
                 updateResults[config.many] = await db.collection(config.many).updateMany(
                     {[config.manyField]: idOfUpdate},
                     {
@@ -32,6 +33,15 @@ async function removeRelatedFields (db, collectionName, idOfUpdate) {
                         }
                     }
                 )
+            } else if (config.type === RelationTypes.oneToMany && config.many === collectionName) {
+                // update "one" collection if "many" deleted
+                updateResults[config.few] = await db.collection(config.few).updateMany(
+                    {[`${config.fewField}.id`]: idOfUpdate},
+                    {
+                        $unset: {
+                            [`${config.fewField}`]: {id: idOfUpdate}
+                        }
+                    })
             }
         })
     }

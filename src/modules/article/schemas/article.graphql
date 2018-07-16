@@ -4,6 +4,24 @@ type Author {
     file:File
 }
 
+input ArticlePreviewImageInput{
+    id:String!
+    url:String!
+    key:String!
+    width:Int
+    height:Int
+    name:String!
+}
+
+type ArticlePreviewImage{
+    id:String!
+    url:String!
+    key:String!
+    width:Int
+    height:Int
+    name:String!
+}
+
 type Article{
     _id: String
     id: String
@@ -26,7 +44,7 @@ type Article{
     authors: [Author!]
     tags:[TagTypeForeignField!]
     gallery:[File!]
-    previewImage:File
+    previewImage:ArticlePreviewImage
 }
 
 input ArticleInput{
@@ -41,6 +59,7 @@ input ArticleInput{
     published: Boolean
     publishedDate: GraphQLDateTime
     isBlogEntry: Boolean
+    previewImage:ArticlePreviewImageInput
     authorsIds:[String]
     tags:[TagInputForeignField]
     contentElements:[ContentInput!]
@@ -57,6 +76,7 @@ input ArticleInputUpdate{
     published: Boolean
     publishedDate: GraphQLDateTime
     isBlogEntry: Boolean
+    previewImage:ArticlePreviewImageInput
     authorsIds:[String]
     tags:[TagInputForeignField]
     contentElements:[ContentInput!]
@@ -68,7 +88,8 @@ type ArticleListPayload{
     title: String
     deleted: Boolean
     languageKey:String
-    published: Boolean
+    published: Boolean,
+    previewImage:ArticlePreviewImage
 }
 
 

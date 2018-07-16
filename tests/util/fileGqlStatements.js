@@ -37,6 +37,9 @@ const findFilesGql = gql`
             contentType
             name
             key
+            _meta{
+                articlesPreviewImages
+            }
         }
     }`
 

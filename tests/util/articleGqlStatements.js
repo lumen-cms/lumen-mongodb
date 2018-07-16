@@ -132,14 +132,22 @@ const articleGql = gql`
 
 
 const findArticlesGql = gql`
-    query{
-        articles{
+    query($where:FindArticlesInput){
+        articles(where:$where){
             id
             slug
             title
             deleted
             languageKey
             published
+            previewImage{
+                id
+                height
+                key
+                name
+                url
+                width
+            }
         }
     }`
 

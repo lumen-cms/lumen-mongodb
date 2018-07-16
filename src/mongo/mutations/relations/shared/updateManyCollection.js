@@ -24,10 +24,11 @@ async function updateManyCollection (db, updateConfig, idOfUpdate, data, isCreat
                 }
             })
     }
-    const selectedIds = Array.isArray(selected) && selected.map(e => e.id)
-    if (!selectedIds || !selectedIds.length) {
+    const selectedIds = Array.isArray(selected) ? selected.map(e => e.id) : [selected.id]
+
+    if (!selectedIds.filter(e => e).length) {
         // don't add any items if nothing is set
-        return
+        console.log('some id missing on related collection: '+JSON.stringify(updateConfig))
     }
     // add current connection
     modif.added = await db.collection(updateConfig.many).updateMany(

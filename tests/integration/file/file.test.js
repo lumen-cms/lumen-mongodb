@@ -38,7 +38,7 @@ test.serial('CRUD on file collection', async t => {
     t.is(typeof insertedId, 'string')
     t.is(filesDeleteOne.deletedCount, 1)
     t.is(files.length, 1)
-    t.deepEqual(firstCreateFile, data)
+    t.deepEqual(firstCreateFile, Object.assign({}, data, {_meta: null}))
     t.is(updatedFiles.length, 1)
     t.is(updatedFiles[0].name, 'new-name-img')
 })
