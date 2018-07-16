@@ -32,6 +32,9 @@ module.exports = {
                     id: 1, _id: 0
                 }
             })
+
+            // todo update background|fileReferences
+
             return {updated: !!res.value}
         },
 
@@ -93,6 +96,8 @@ module.exports = {
                     id: 1, _id: 0
                 }
             })
+
+            // todo remove background|fileReferences
 
             return {updated: !!res.value}
         },
