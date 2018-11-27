@@ -12,77 +12,79 @@ const typeDefs = require('./graphql/mergeTypeDefs')
 const resolvers = require('./graphql/mergeResolvers')
 
 async function startServer () {
+  /**
+   *
+   * @type {{db: Db, ObjectID: ObjectID}|*}
+   */
+  const {database,client} = await connectMongoDb({})
+
+  /**
+   *
+   * @type {PubSub}
+   */
+  const pubSub = new PubSub()
+
+  /**
+   *
+   * @param req
+   * @returns {{req: *, db: Db, ObjectID: ObjectID, pubSub: PubSub, withFilter: (asyncIteratorFn: ResolverFn, filterFn: FilterFn) => ResolverFn}}
+   */
+  const context = async (req) => {
     /**
      *
-     * @type {{db: Db, ObjectID: ObjectID}|*}
      */
-    const database = await connectMongoDb({})
+    const projectId = getProjectId(req.request)
 
-    /**
-     *
-     * @type {PubSub}
-     */
-    const pubSub = new PubSub()
+    client.db(projectId)
+    
+    const {user, permission} = getUserRoleOnProjectID(req.request, projectId)
 
-    /**
-     *
-     * @param req
-     * @returns {{req: *, db: Db, ObjectID: ObjectID, pubSub: PubSub, withFilter: (asyncIteratorFn: ResolverFn, filterFn: FilterFn) => ResolverFn}}
-     */
-    const context = async (req) => {
-        /**
-         *
-         */
-        const projectId = getProjectId(req.request)
-
-        const {user, permission} = getUserRoleOnProjectID(req.request, projectId)
-
-        return {
-            req: req.request,
-            db: database,
-            pubSub,
-            withFilter,
-            projectId,
-            user,
-            permission,
-            rootAuthMutation: getAuthBaseMutation(projectId, user, permission),
-            rootAuthQuery: getAuthBaseQuery(projectId, user, permission)
-        }
+    return {
+      req: req.request,
+      db: database,
+      pubSub,
+      withFilter,
+      projectId,
+      user,
+      permission,
+      rootAuthMutation: getAuthBaseMutation(projectId, user, permission),
+      rootAuthQuery: getAuthBaseQuery(projectId, user, permission)
     }
+  }
 
-    /**
-     *
-     * @type {GraphQLServer}
-     */
-    const Server = new GraphQLServer({
-        typeDefs,
-        resolvers,
-        context,
-        middlewares: [permissions],
-        schemaDirectives: {
-            MongoWhere: MongoWhereDirective,
-            MongoFind: MongoFindDirective,
-            MongoCreateOne: MongoCreateOneDirective,
-            MongoUpdateOne: MongoUpdateOneDirective,
-            MongoDeleteOne: MongoDeleteOneDirective
-        }
-        // resolverValidationOptions: {
-        //     allowResolversNotInSchema: true
-        // }
-    })
-
-    // options
-    const opts = {
-        cors: {
-            credentials: true,
-            origin: ['http://localhost:8080', 'http://localhost:3000'] // here define the origins
-        },
-        port: 4000
+  /**
+   *
+   * @type {GraphQLServer}
+   */
+  const Server = new GraphQLServer({
+    typeDefs,
+    resolvers,
+    context,
+    middlewares: [permissions],
+    schemaDirectives: {
+      MongoWhere: MongoWhereDirective,
+      MongoFind: MongoFindDirective,
+      MongoCreateOne: MongoCreateOneDirective,
+      MongoUpdateOne: MongoUpdateOneDirective,
+      MongoDeleteOne: MongoDeleteOneDirective
     }
+    // resolverValidationOptions: {
+    //     allowResolversNotInSchema: true
+    // }
+  })
 
-    return Server.start(opts, () => {
-        console.log(`Server is running on http://localhost:${opts.port}`)
-    })
+  // options
+  const opts = {
+    cors: {
+      credentials: true,
+      origin: ['http://localhost:8080', 'http://localhost:3000'] // here define the origins
+    },
+    port: 4000
+  }
+
+  return Server.start(opts, () => {
+    console.log(`Server is running on http://localhost:${opts.port}`)
+  })
 }
 
 return startServer()

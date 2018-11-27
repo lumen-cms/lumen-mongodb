@@ -2,6 +2,11 @@ const {getMaterializedMongoModifier, createObjectIdString} = require('../../../u
 const {CollectionNames} = require('../../../mongo/enum')
 const {documentExistsOnce} = require('../../../mongo/mutations/documentExists')
 const _get = require('lodash.get')
+
+async function updateFileReferenceRelationToFile (articleId, contentId, data) {
+
+}
+
 module.exports = {
     Mutation: {
         /**
@@ -34,6 +39,7 @@ module.exports = {
             })
 
             // todo update background|fileReferences
+
 
             return {updated: !!res.value}
         },
