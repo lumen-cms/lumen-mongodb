@@ -9,7 +9,8 @@ const DB = {
   user: process.env[process.env.NODE_ENV + '_MONGODB_USER'],
   password: process.env[process.env.NODE_ENV + '_MONGODB_PASSWORD'],
   db: process.env[process.env.NODE_ENV + '_MONGODB_DB'],
-  url: process.env[process.env.NODE_ENV + '_MONGODB_URL']
+  url: process.env[process.env.NODE_ENV + '_MONGODB_URL'],
+  atlasUrl: process.env[process.env.NODE_ENV + '_ATLAS_URL']
 }
 
 /**
@@ -38,7 +39,13 @@ module.exports = {
        *
        * @type {MongoClient}
        */
-      const client = await MongoClient.connect(`mongodb://${user}:${password}@${url}/${db}`, { useNewUrlParser: true })
+      let client
+      if(DB.atlasUrl) {
+        console.log('=> connect to atlas')
+        client = await MongoClient.connect(DB.atlasUrl, { useNewUrlParser: true })
+      } else {
+        client = await MongoClient.connect(`mongodb://${user}:${password}@${url}/${db}`, { useNewUrlParser: true })
+      }
       /**
        *
        * @type {Db}

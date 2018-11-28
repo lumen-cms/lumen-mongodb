@@ -14,7 +14,7 @@ const {removeRelatedFields} = require('./relations/removeRelatedFields')
 async function insertOneMutation (db, collectionName, data, context) {
     data.createdAt = new Date(new Date().toISOString())
     const objectID = new ObjectID()
-    data._id = objectID
+    data._id = objectID.toString()
     data.id = objectID.toString()
     if (context) {
         context.user && (data.createdBy = context.user.id)

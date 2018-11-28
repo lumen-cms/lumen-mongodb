@@ -1,9 +1,7 @@
-const {resolve} = require('path')
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const {GraphQLServer, PubSub, withFilter} = require('graphql-yoga')
 require('dotenv').config()
 const {connectMongoDb} = require('./mongo/initDb')
-// const resolvers = require('./graphql/resolvers')
 const {getAuthBaseMutation, getAuthBaseQuery} = require('./util/queryAuthHelper')
 const {permissions} = require('./graphql/middleware/permissions')
 const {getProjectId, getUserRoleOnProjectID} = require('./util/contextHelper')
