@@ -8,6 +8,7 @@ const {verify, sign} = require('jsonwebtoken')
  */
 function getPermissionOfUser (permissions) {
     if (permissions.includes(UserRole.OPERATOR)) {
+        return UserRole.OPERATOR
     } else if (permissions.includes(UserRole.ADMIN)) {
         return UserRole.ADMIN
     } else if (permissions.includes(UserRole.MODERATOR)) {

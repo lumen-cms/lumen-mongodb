@@ -51,8 +51,7 @@ async function deleteOneMutation (db, collectionName, find, rootAuthMutation) {
         const main = await db.collection(collectionName).deleteOne(Object.assign({}, find, rootAuthMutation))
         // update related collections
         if (main.deletedCount === 1) {
-            const c = await removeRelatedFields(db, collectionName, find.id)
-            // console.log(c)
+            await removeRelatedFields(db, collectionName, find.id)
         }
         return main
     } catch (e) {

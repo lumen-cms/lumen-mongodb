@@ -27,7 +27,7 @@ async function startServer () {
   /**
    *
    * @param req
-   * @returns {{req: *, db: Db, ObjectID: ObjectID, pubSub: PubSub, withFilter: (asyncIteratorFn: ResolverFn, filterFn: FilterFn) => ResolverFn}}
+   * @returns {Promise<{req: *, db: (Db.database|*), pubSub: PubSub, withFilter: (asyncIteratorFn: ResolverFn, filterFn: FilterFn) => ResolverFn, projectId: (*|*|boolean|string), user: *, permission: *, rootAuthMutation: (*|{projectId: *}), rootAuthQuery: (*|{projectId: *})}>}
    */
   const context = async (req) => {
     /**
