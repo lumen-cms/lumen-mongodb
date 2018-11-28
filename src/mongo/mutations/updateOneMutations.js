@@ -14,6 +14,7 @@ const {removeRelatedFields} = require('./relations/removeRelatedFields')
 async function insertOneMutation (db, collectionName, data, context) {
     data.createdAt = new Date(new Date().toISOString())
     const objectID = new ObjectID()
+    // @TODO https://github.com/apollographql/apollo-server/issues/1649#issuecomment-420840287
     data._id = objectID.toString()
     data.id = objectID.toString()
     if (context) {
