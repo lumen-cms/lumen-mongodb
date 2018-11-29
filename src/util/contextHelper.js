@@ -52,7 +52,7 @@ module.exports = {
     getUserRoleOnProjectID: function (req, projectId) {
         try {
             const Authorization = req.get('Authorization')
-            if (Authorization) {
+            if (Authorization && Authorization !== 'null') {
                 const token = Authorization.replace('Bearer ', '')
                 /**
                  * @type AuthUser

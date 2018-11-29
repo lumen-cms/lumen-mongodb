@@ -16,6 +16,7 @@
     "test:article-tags": "TZ=utc NODE_ENV=development ava tests/integration/article/article-tags.test.js --verbose",
     "test:article-files": "TZ=utc NODE_ENV=development ava tests/integration/article/article-files.test.js --verbose",
     "test:article": "TZ=utc NODE_ENV=development ava tests/integration/article/article.test.js --verbose",
+    "test:user": "TZ=utc NODE_ENV=development ava tests/integration/user/signup.test.js --verbose",
     "test:watch": "TZ=utc NODE_ENV=development ava tests/**/*.js --verbose --watch",
     "dev": "TZ=utc NODE_ENV=development nodemon -e js,json,graphql,gql src/index.js",
     "serve": "TZ=utc NODE_ENV=development node src/index.js",

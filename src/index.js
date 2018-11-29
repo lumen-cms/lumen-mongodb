@@ -75,7 +75,7 @@ async function startServer () {
   const opts = {
     cors: {
       credentials: true,
-      origin: ['http://localhost:8080', 'http://localhost:3000'] // here define the origins
+      origin: ['http://localhost:8080', 'http://localhost:8002', 'http://localhost:3000'] // here define the origins
     },
     port: 4000
   }
