@@ -72,6 +72,7 @@ module.exports = {
          */
         updateUser: async (parent, {_id, email, firstName, lastName}, {db, pubSub}) => {
             const form = getUserObj({email, firstName, lastName})
+            const collection = db.collection(CollectionNames.users)
             try {
                 delete form._id // need to remove the _id modifier
                 const res = await db.collection(CollectionNames.users).updateOne(
@@ -87,7 +88,7 @@ module.exports = {
                         node: {_id: ObjectID(_id)}
                     },
                     pubSub,
-                    collections.users
+                    collection.users
                 )
                 return res
             } catch (e) {

@@ -1,14 +1,16 @@
-const {MongoClient} = require('mongodb')
-const {initUserCollection} = require('../modules/user/db/userCollection.js')
-const {initArticleCollection} = require('../modules/article/db/articleCollection')
-const {initFileCollection} = require('../modules/file/fileCollection')
-const {initTagCollection} = require('../modules/tag/tagCollection')
-const {initAuthorCollection} = require('../modules/authors/authorsCollection')
+/* eslint-disable no-console */
+const { MongoClient } = require('mongodb')
+const { initUserCollection } = require('../modules/user/db/userCollection.js')
+const { initArticleCollection } = require('../modules/article/db/articleCollection')
+const { initFileCollection } = require('../modules/file/fileCollection')
+const { initTagCollection } = require('../modules/tag/tagCollection')
+const { initAuthorCollection } = require('../modules/authors/authorsCollection')
 const DB = {
   user: process.env[process.env.NODE_ENV + '_MONGODB_USER'],
   password: process.env[process.env.NODE_ENV + '_MONGODB_PASSWORD'],
   db: process.env[process.env.NODE_ENV + '_MONGODB_DB'],
-  url: process.env[process.env.NODE_ENV + '_MONGODB_URL']
+  url: process.env[process.env.NODE_ENV + '_MONGODB_URL'],
+  atlasUrl: process.env[process.env.NODE_ENV + '_ATLAS_URL']
 }
 
 /**
@@ -29,13 +31,21 @@ module.exports = {
    * @param db
    * @return {Promise<Db>}
    */
-  connectMongoDb: async ({user = DB.user, password = DB.password, url = DB.url, db = DB.db}) => {
+  connectMongoDb: async ({ user = DB.user, password = DB.password, url = DB.url, db = DB.db }) => {
+    console.log('=> connect to database')
+
     try {
       /**
        *
        * @type {MongoClient}
        */
-      const client = await MongoClient.connect(`mongodb://${user}:${password}@${url}/${db}`, {useNewUrlParser: true})
+      let client
+      if(DB.atlasUrl) {
+        console.log('=> connect to atlas')
+        client = await MongoClient.connect(DB.atlasUrl, { useNewUrlParser: true })
+      } else {
+        client = await MongoClient.connect(`mongodb://${user}:${password}@${url}/${db}`, { useNewUrlParser: true })
+      }
       /**
        *
        * @type {Db}
@@ -50,9 +60,9 @@ module.exports = {
       await initAuthorCollection(database)
       // process.on('SIGINT', cleanup(client))
       // process.on('SIGTERM', cleanup(client))
-      return {database, client}
+      return { database, client }
     } catch (e) {
-      console.log(e)
+      console.error('=> connection error', e)
       throw new Error(e)
     }
   }

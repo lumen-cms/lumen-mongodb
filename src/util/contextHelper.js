@@ -8,6 +8,7 @@ const {verify, sign} = require('jsonwebtoken')
  */
 function getPermissionOfUser (permissions) {
     if (permissions.includes(UserRole.OPERATOR)) {
+        return UserRole.OPERATOR
     } else if (permissions.includes(UserRole.ADMIN)) {
         return UserRole.ADMIN
     } else if (permissions.includes(UserRole.MODERATOR)) {
@@ -51,7 +52,7 @@ module.exports = {
     getUserRoleOnProjectID: function (req, projectId) {
         try {
             const Authorization = req.get('Authorization')
-            if (Authorization) {
+            if (Authorization && Authorization !== 'null') {
                 const token = Authorization.replace('Bearer ', '')
                 /**
                  * @type AuthUser

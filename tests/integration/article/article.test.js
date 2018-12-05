@@ -28,7 +28,7 @@ const createArticleData = {
 
 
 // test('create article as not logged in user', async t => {
-//     const error = await t.throws(graphqlRequest(articleGql, {data: createArticleData}), Error)
+//     const error = await t.throws(() => graphqlRequest(articleGql, {data: createArticleData}), Error)
 //     console.log(error)
 //     // todo throws is not working..
 // })

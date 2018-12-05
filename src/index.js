@@ -1,9 +1,7 @@
-const {resolve} = require('path')
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
 const {GraphQLServer, PubSub, withFilter} = require('graphql-yoga')
 require('dotenv').config()
 const {connectMongoDb} = require('./mongo/initDb')
-// const resolvers = require('./graphql/resolvers')
 const {getAuthBaseMutation, getAuthBaseQuery} = require('./util/queryAuthHelper')
 const {permissions} = require('./graphql/middleware/permissions')
 const {getProjectId, getUserRoleOnProjectID} = require('./util/contextHelper')
@@ -27,7 +25,7 @@ async function startServer () {
   /**
    *
    * @param req
-   * @returns {{req: *, db: Db, ObjectID: ObjectID, pubSub: PubSub, withFilter: (asyncIteratorFn: ResolverFn, filterFn: FilterFn) => ResolverFn}}
+   * @returns {Promise<{req: *, db: (Db.database|*), pubSub: PubSub, withFilter: (asyncIteratorFn: ResolverFn, filterFn: FilterFn) => ResolverFn, projectId: (*|*|boolean|string), user: *, permission: *, rootAuthMutation: (*|{projectId: *}), rootAuthQuery: (*|{projectId: *})}>}
    */
   const context = async (req) => {
     /**
@@ -77,7 +75,7 @@ async function startServer () {
   const opts = {
     cors: {
       credentials: true,
-      origin: ['http://localhost:8080', 'http://localhost:3000'] // here define the origins
+      origin: ['http://localhost:8080', 'http://localhost:8002', 'http://localhost:3000'] // here define the origins
     },
     port: 4000
   }

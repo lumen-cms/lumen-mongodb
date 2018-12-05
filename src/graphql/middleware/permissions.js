@@ -1,7 +1,7 @@
 const {documentExists} = require('../../mongo/mutations/documentExists')
 const CollectionNames = require('../../mongo/enum').CollectionNames
 const {UserRole} = require('../../mongo/enum')
-const {rule, shield, and, or, not} = require('graphql-shield')
+const {rule, shield, and, or} = require('graphql-shield')
 // Rules
 
 const isAuthenticated = rule()(async (parent, args, {user}) => {

@@ -14,7 +14,8 @@ const {removeRelatedFields} = require('./relations/removeRelatedFields')
 async function insertOneMutation (db, collectionName, data, context) {
     data.createdAt = new Date(new Date().toISOString())
     const objectID = new ObjectID()
-    data._id = objectID
+    // @TODO https://github.com/apollographql/apollo-server/issues/1649#issuecomment-420840287
+    data._id = objectID.toString()
     data.id = objectID.toString()
     if (context) {
         context.user && (data.createdBy = context.user.id)
@@ -51,8 +52,7 @@ async function deleteOneMutation (db, collectionName, find, rootAuthMutation) {
         const main = await db.collection(collectionName).deleteOne(Object.assign({}, find, rootAuthMutation))
         // update related collections
         if (main.deletedCount === 1) {
-            const c = await removeRelatedFields(db, collectionName, find.id)
-            // console.log(c)
+            await removeRelatedFields(db, collectionName, find.id)
         }
         return main
     } catch (e) {
