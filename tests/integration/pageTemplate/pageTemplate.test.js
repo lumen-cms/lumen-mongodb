@@ -22,7 +22,7 @@ const testData = {
 }
 
 test('create page template should fail if not logged in', async t => {
-    const e = await t.throws(graphqlRequest(createPageTemplateGql, {data: testData}))
+    const e = await t.throwsAsync(graphqlRequest(createPageTemplateGql, {data: testData}))
     t.is(e.message.includes('Not Authorised'), true)
 })
 

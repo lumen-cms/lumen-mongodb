@@ -10,7 +10,7 @@ const testData = {
 }
 
 test('create tag should fail if not logged in', async t => {
-    const e = await t.throws(graphqlRequest(createTagGql, {data: testData}))
+    const e = await t.throwsAsync(graphqlRequest(createTagGql, {data: testData}))
     t.is(e.message.includes('Not Authorised'), true)
 })
 
