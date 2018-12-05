@@ -4,7 +4,7 @@
   "description": "GraphQL-YOGA Example with mongodb",
   "main": "src/index.js",
   "scripts": {
-    "test": "TZ=utc NODE_ENV=development ava tests/**/*.js --verbose",
+    "test": "TZ=utc NODE_ENV=development ava tests/integration/**/*.js --verbose",
     "test:content-remove": "TZ=utc NODE_ENV=development ava tests/integration/article/content/delete.content.test.js --verbose",
     "test:content-move": "TZ=utc NODE_ENV=development ava tests/integration/article/content/move_copy_paste.content.test.js --verbose",
     "test:content-create": "TZ=utc NODE_ENV=development ava tests/integration/article/content/create.content.test.js --verbose",
@@ -82,8 +82,7 @@
   },
   "ava": {
     "files": [
-      "!util",
-      "tests/**/*.test.js"
+      "tests/integration/**/*.test.js"
     ]
   },
   "nodemonConfig": {
