@@ -34,7 +34,7 @@
   "author": "Dominic Garms <djgarms@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "aws-sdk": "2.364.0",
+    "aws-sdk": "2.370.0",
     "bcryptjs": "^2.4.3",
     "deep-rename-keys": "^0.2.1",
     "dotenv": "6.1.0",
